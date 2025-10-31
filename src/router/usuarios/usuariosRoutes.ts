@@ -1,9 +1,8 @@
-//EJEMPLO DE RUTAS MODULARES
 export default [
   {
-    path: '/',
-    name: 'login',
-    component: () => import('@/features/auth/views/loginView.vue'),
+    path: '/registrar',
+    name: 'registrar',
+    component: () => import('@/features/auth/views/registrarView.vue'),
     //    children: [
     //      {
     //        path: '',
@@ -16,10 +15,5 @@ export default [
     //        component: () => import('../views/HomeView.vue'),
     //      },
     //    ],
-  },
-  {
-    path: '/home',
-    name: 'home',
-    component: () => import('@/views/homeView.vue'),
   },
 ]
