@@ -7,7 +7,8 @@ import router from './router'
 import './assets/styles/main.css'
 
 import PrimeVue from 'primevue/config'
-import '@primeuix/themes/aura'
+
+import Aura from '@primeuix/themes/aura'
 import 'primeicons/primeicons.css'
 
 const app = createApp(App)
@@ -15,7 +16,8 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(PrimeVue, {
-  ripple: true,
-  inputStyle: 'outlined',
+  theme: {
+    preset: Aura,
+  },
 })
 app.mount('#app')
