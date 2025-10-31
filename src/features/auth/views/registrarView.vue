@@ -4,26 +4,40 @@
       <template #title>
         <div class="flex items-center justify-center gap-2">
           <i class="pi pi-user text-xl" />
-          <span class="text-xl font-semibold">Iniciar sesión</span>
+          <span class="text-xl font-semibold">Crea tu cuenta</span>
         </div>
       </template>
 
       <template #content>
         <form @submit.prevent="onSubmit" class="flex flex-col gap-9 mt-4">
+          <!-- nombre -->
+          <div class="flex flex-col gap-2">
+            <FloatLabel class="w-full">
+              <InputText class="w-full" id="correo" v-model.trim="form.nombre" required />
+              <label for="correo">Ingrese su primer nombre y primer apellido</label>
+            </FloatLabel>
+          </div>
           <!-- Correo -->
           <div class="flex flex-col gap-2">
             <FloatLabel class="w-full">
-              <InputText class="w-full" id="correo" v-model.trim="form.correo" type="email" autocomplete="email"
+              <InputText id="password" v-model="form.correo" :feedback="false" type="email" input-class="w-full"
                 required />
-              <label for="correo">Ingrese su correo</label>
+              <label for="password">Ingrese su correo</label>
             </FloatLabel>
           </div>
+
           <!-- Contraseña -->
           <div class="flex flex-col gap-2">
             <FloatLabel class="w-full">
-              <Password id="password" v-model="form.password" :feedback="false" toggle-mask input-class="w-full"
-                :input-props="{ autocomplete: 'current-password' }" required />
+              <InputText id="password" v-model="form.password" :feedback="false" input-class="w-full" required />
               <label for="password">Ingrese su contraseña</label>
+            </FloatLabel>
+          </div>
+          <!-- Telefono -->
+          <div class="flex flex-col gap-2">
+            <FloatLabel class="w-full">
+              <InputText id="password" v-model="form.telefono" :feedback="false" input-class="w-full" required />
+              <label for="password">Ingrese su número telefonico</label>
             </FloatLabel>
           </div>
 
@@ -32,11 +46,8 @@
 
           <!-- Acciones -->
           <div class="flex flex-col gap-2 mt-2">
-            <Button type="submit" label="Ingresar" icon="pi pi-sign-in" :loading="loading"
+            <Button type="submit" label="Registrar" icon="pi pi-sign-in" :loading="loading"
               :disabled="loading || !canSubmit" />
-            <Divider align="center">o</Divider>
-            <Button @click="registrarcuenta()" label="Crear cuenta" icon="pi pi-user-plus" severity="secondary" outlined
-              class="w-full" />
           </div>
         </form>
       </template>
@@ -49,17 +60,15 @@ import { reactive, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
 import Button from 'primevue/button'
-import Divider from 'primevue/divider'
 import FloatLabel from 'primevue/floatlabel'
-import type { login } from '@/interfaces/auth/ILogin'
-import { loginUsuarios } from '@/api/auth/loginApi'
 import axios from 'axios'
+import type { crearUsuario } from '@/interfaces/usuarios/usuario'
+import { crearUsuarioFinal } from '@/api/usuarios/usuariosApi'
 
 const router = useRouter()
-
-const form: login = reactive({ correo: '', password: '' })
+//POR DEFECTO SIEMPRE EN LA PAGINA DE REGISTRO SE VAN A CREAR USUARIOS TIPO 1 QUE SON LOS EXTERNOS ES DECIR USUARIO FINAL
+const form: crearUsuario = reactive({ tipoUsuarioId: 1, nombre: '', correo: '', password: '', telefono: '' })
 const loading = ref(false)
 const errorMsg = ref('')
 
@@ -70,30 +79,27 @@ async function onSubmit() {
   loading.value = true
   errorMsg.value = ''
   try {
-    const response = await loginUsuarios({
+    const response = await crearUsuarioFinal({
+      tipoUsuarioId: 1,
+      nombre: form.nombre,
       correo: form.correo.trim(),
-      password: form.password
+      password: form.password,
+      telefono: form.telefono
     })
 
     if (response) {
-      await router.push({ name: 'home' })
+      await router.push({ name: 'login' })
     }
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       errorMsg.value = (err.response?.data)?.message
-        ?? (err.response?.status === 500 ? 'Credenciales inválidas.' : 'No se pudo iniciar sesión.')
+        ?? (err.response?.status === 500 ? 'Valide que los campos se hayan llenado.' : 'Error creando su cuenta.')
     } else {
       errorMsg.value = 'Error inesperado.'
     }
   } finally {
     loading.value = false
   }
-}
-
-
-function registrarcuenta() {
-  router.push({ name: 'registrar' })
-
 }
 </script>
 
