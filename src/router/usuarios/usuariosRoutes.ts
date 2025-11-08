@@ -1,28 +1,24 @@
 export default [
-    {
+  {
     path: '/login',
-      name: 'login',
-      component: () => import('@/features/auth/views/loginView.vue'),
-    },
-    {
-      path: '/registrar',
-      name: 'registrar',
-      component: () => import('@/features/auth/views/registrarView.vue'),
-    },
+    name: 'login',
+    component: () => import('@/features/auth/views/loginView.vue'),
+  },
+  {
+    path: '/registrar',
+    name: 'registrar',
+    component: () => import('@/features/auth/views/registrarView.vue'),
+  },
 
-    // Rutas protegidas
-    // RUTAS PRIVADAS (requieren autenticación)
-    {
-      path: '/',
-      redirect: '/home',
-    },
-    {
-      path: '/home',
-      name: 'home',
-      component: () => import('@/views/userHomePageView.vue'),
-      meta: { requiresAuth: true }
-    },
-    /*
+  // Rutas protegidas
+  // RUTAS PRIVADAS (requieren autenticación)
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('@/views/userHomePageView.vue'),
+    meta: { requiresAuth: true },
+  },
+  /*
     {
       path: '/disciplinas',
       name: 'disciplinas',
@@ -48,5 +44,4 @@ export default [
       meta: { requiresAuth: true }
     },
     */
-
 ]

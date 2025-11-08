@@ -29,8 +29,7 @@
             <Button label="Perfil" icon="pi pi-user" text class="btn-perfil" @click="irAlPerfil" />
 
             <!-- Cerrar sesión -->
-            <Button label="Salir" icon="pi pi-sign-out" severity="danger" text class="btn-salir"
-              @click="cerrarSesion" />
+            <logoutButton />
           </div>
         </div>
       </header>
@@ -214,14 +213,9 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import IconField from 'primevue/iconfield'
 import InputIcon from 'primevue/inputicon'
-//import Toast from 'primevue/toast'
-//import ConfirmDialog from 'primevue/confirmdialog'
-import { useConfirm } from 'primevue/useconfirm'
-import { useToast } from 'primevue/usetoast'
+import logoutButton from '@/components/UI/logoutButton.vue';
 
 const router = useRouter()
-const confirm = useConfirm()
-const toast = useToast()
 
 const searchQuery = ref('')
 
@@ -317,20 +311,7 @@ const verTodasReservas = () => router.push({ name: 'reservas' })
 const continuarCursos = () => router.push({ name: 'cursos' })
 const irAlPerfil = () => router.push({ name: 'perfil' })
 
-const cerrarSesion = () => {
-  confirm.require({
-    message: '¿Estás seguro de que quieres cerrar sesión?',
-    header: 'Confirmar',
-    icon: 'pi pi-exclamation-triangle',
-    acceptLabel: 'Sí, salir',
-    rejectLabel: 'Cancelar',
-    accept: () => {
-      localStorage.removeItem('usuario')
-      toast.add({ severity: 'success', summary: 'Sesión cerrada', detail: 'Has cerrado sesión exitosamente', life: 3000 })
-      router.push({ name: 'login' })
-    }
-  })
-}
+
 
 /*
 const getEstadoSeverity = (estado: string) => {
