@@ -76,6 +76,7 @@ async function onSubmit() {
     })
 
     if (response) {
+      localStorage.setItem('usuario', JSON.stringify(response))
       await router.push({ name: 'home' })
     }
   } catch (err: unknown) {

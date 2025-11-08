@@ -1,0 +1,12 @@
+version: "2"
+
+services:
+  frontend:
+    build: .
+    container_name: villa-frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=production

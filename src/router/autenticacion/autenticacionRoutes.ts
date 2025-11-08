@@ -22,4 +22,16 @@ export default [
     name: 'home',
     component: () => import('@/views/homeView.vue'),
   },
+    {
+    path: '/disciplinas',
+    name: 'disciplinas',
+    component: () => import('@/features/disciplinas/views/DisciplinasView.vue'),
+  },
+  {
+    path: '/disciplinas/:id',
+    name: 'disciplinaDetalle',
+    component: () => import('@/features/disciplinas/views/DisciplinaDetalleView.vue'),
+    props: true,
+  },
+
 ]
