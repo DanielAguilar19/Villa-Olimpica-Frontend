@@ -1,5 +1,6 @@
 <template>
-  <section class="min-h-screen flex items-center justify-end p-4 bg-surface-50 dark:bg-surface-900 perspective-1000">
+  <section
+    class="aurora-bg min-h-screen flex items-center justify-end p-4 bg-surface-50 dark:bg-surface-900 perspective-1000">
     <Card class="w-100 max-w-md shadow-lg glass-card ml-auto min-h-[25vh]">
       <template #title>
         <div class="flex items-center justify-center gap-2">
@@ -45,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
@@ -64,6 +65,10 @@ const loading = ref(false)
 const errorMsg = ref('')
 
 const canSubmit = computed(() => form.correo.trim().length > 0 && form.password.length > 0)
+
+onMounted(() => {
+  localStorage.removeItem('usuario')
+})
 
 async function onSubmit() {
   if (!canSubmit.value) return
@@ -91,7 +96,6 @@ async function onSubmit() {
   }
 }
 
-
 function registrarcuenta() {
   router.push({ name: 'registrar' })
 
@@ -102,6 +106,53 @@ function registrarcuenta() {
 #correo,
 #password {
   width: 100%;
+}
+
+.aurora-bg {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+
+  background:
+    radial-gradient(900px 600px at 80% -10%, #0b1220 0%, #090f1a 55%, #070d16 100%),
+    radial-gradient(800px 540px at 15% 110%, #0a1322 0%, #080f1b 60%, #070d16 100%),
+    #070d16;
+  background-attachment: fixed;
+}
+
+/* Capas aurora (estáticas) */
+.aurora-bg::before,
+.aurora-bg::after {
+  content: "";
+  position: absolute;
+  inset: -25% -15%;
+  pointer-events: none;
+  filter: blur(72px);
+  opacity: 0.85;
+  mix-blend-mode: screen;
+  z-index: 0;
+}
+
+/* Morados (lado superior/medio) */
+.aurora-bg::before {
+  background:
+    radial-gradient(40% 60% at 22% 28%, rgba(110, 34, 160, 0.45) 0%, rgba(110, 34, 160, 0.08) 60%, transparent 70%),
+    radial-gradient(36% 56% at 72% 18%, rgba(56, 20, 110, 0.50) 0%, rgba(56, 20, 110, 0.08) 60%, transparent 75%),
+    radial-gradient(44% 64% at 85% 62%, rgba(140, 60, 210, 0.35) 0%, rgba(140, 60, 210, 0.08) 60%, transparent 75%);
+}
+
+/* Verdes menta (lado inferior/diagonal) */
+.aurora-bg::after {
+  background:
+    radial-gradient(45% 65% at 30% 72%, rgba(0, 255, 190, 0.35) 0%, rgba(0, 255, 190, 0.07) 60%, transparent 75%),
+    radial-gradient(35% 55% at 60% 82%, rgba(0, 200, 160, 0.30) 0%, rgba(0, 200, 160, 0.07) 60%, transparent 75%),
+    radial-gradient(26% 40% at 82% 42%, rgba(140, 255, 230, 0.20) 0%, rgba(140, 255, 230, 0.05) 55%, transparent 70%);
+}
+
+/* Asegura que el contenido vaya encima de las “luces” */
+.aurora-bg>* {
+  position: relative;
+  z-index: 1;
 }
 
 :deep(.p-card .p-card-content) {

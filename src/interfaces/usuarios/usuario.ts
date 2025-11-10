@@ -5,3 +5,11 @@ export interface crearUsuario {
   password: string
   telefono: string
 }
+
+export interface usuario {
+  correo: string
+  estado: string
+  id: number
+  nombre: string
+  tipoUsuario: string
+}

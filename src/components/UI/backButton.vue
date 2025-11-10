@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Button @click="back">Atras</Button>
+    <Button raised @click="back" label="Regresar" icon="pi pi-chevron-left" />
   </div>
 </template>
 
@@ -11,8 +11,9 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 function back() {
-  localStorage.removeItem('usuario')
-  router.push({ name: 'login' });
+  router.push({
+    name: 'home'
+  })
 }
 </script>
 

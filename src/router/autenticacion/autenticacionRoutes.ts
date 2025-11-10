@@ -20,9 +20,9 @@ export default [
   {
     path: '/home',
     name: 'home',
-    component: () => import('@/views/homeView.vue'),
+    component: () => import('@/views/userHomePageView.vue'),
   },
-    {
+  {
     path: '/disciplinas',
     name: 'disciplinas',
     component: () => import('@/features/disciplinas/views/DisciplinasView.vue'),
@@ -33,5 +33,4 @@ export default [
     component: () => import('@/features/disciplinas/views/DisciplinaDetalleView.vue'),
     props: true,
   },
-
 ]

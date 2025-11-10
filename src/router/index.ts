@@ -2,10 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import rutasAuth from '@/router/autenticacion/autenticacionRoutes'
 import rutasUsuario from '@/router/usuarios/usuariosRoutes'
 import rutasDisciplinas from '@/router/disciplinas/disciplinasRoutes'
+import rutasDisponibilidad from '@/router/disponibilidad/disponibilidadRoutes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [...rutasAuth, ...rutasUsuario, ...rutasDisciplinas],
+  routes: [...rutasAuth, ...rutasUsuario, ...rutasDisciplinas, ...rutasDisponibilidad],
 })
 /*
 router.beforeEach((to, from, next) => {
