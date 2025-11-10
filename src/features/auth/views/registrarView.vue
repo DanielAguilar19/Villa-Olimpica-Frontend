@@ -1,5 +1,6 @@
 <template>
-  <section class="min-h-screen flex items-center justify-end p-4 bg-surface-50 dark:bg-surface-900 perspective-1000">
+  <section
+    class=" aurora-bg min-h-screen flex items-center justify-end p-4 bg-surface-50 dark:bg-surface-900 perspective-1000">
     <Card class="w-100 max-w-md shadow-lg glass-card ml-auto min-h-[25vh]">
       <template #title>
         <div class="flex items-center justify-center gap-2">
@@ -48,6 +49,8 @@
           <div class="flex flex-col gap-2 mt-2">
             <Button type="submit" label="Registrar" icon="pi pi-sign-in" :loading="loading"
               :disabled="loading || !canSubmit" />
+            <Button severity="secondary" variant="text" raised @click="regresarLogin" label="Regresar"
+              icon="pi pi-chevron-left" />
           </div>
         </form>
       </template>
@@ -72,7 +75,11 @@ const form: crearUsuario = reactive({ tipoUsuarioId: 1, nombre: '', correo: '', 
 const loading = ref(false)
 const errorMsg = ref('')
 
-const canSubmit = computed(() => form.correo.trim().length > 0 && form.password.length > 0)
+const canSubmit = computed(() => form.correo.trim().length > 0 && form.password.length > 0);
+
+function regresarLogin() {
+  router.push({ name: 'login' })
+}
 
 async function onSubmit() {
   if (!canSubmit.value) return
@@ -104,6 +111,57 @@ async function onSubmit() {
 </script>
 
 <style scoped>
+.aurora-bg {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+
+  /* Fondo base: dos radiales + color sólido de respaldo */
+  background:
+    radial-gradient(900px 600px at 80% -10%, #0b1220 0%, #090f1a 55%, #070d16 100%),
+    radial-gradient(800px 540px at 15% 110%, #0a1322 0%, #080f1b 60%, #070d16 100%),
+    #070d16;
+  /* respaldo */
+  background-attachment: fixed;
+  /* más “profundo” al hacer scroll */
+}
+
+/* Capas aurora (estáticas) */
+.aurora-bg::before,
+.aurora-bg::after {
+  content: "";
+  position: absolute;
+  inset: -25% -15%;
+  pointer-events: none;
+  filter: blur(72px);
+  opacity: 0.85;
+  mix-blend-mode: screen;
+  /* ilumina sobre el azul oscuro */
+  z-index: 0;
+}
+
+/* Morados (lado superior/medio) */
+.aurora-bg::before {
+  background:
+    radial-gradient(40% 60% at 22% 28%, rgba(110, 34, 160, 0.45) 0%, rgba(110, 34, 160, 0.08) 60%, transparent 70%),
+    radial-gradient(36% 56% at 72% 18%, rgba(56, 20, 110, 0.50) 0%, rgba(56, 20, 110, 0.08) 60%, transparent 75%),
+    radial-gradient(44% 64% at 85% 62%, rgba(140, 60, 210, 0.35) 0%, rgba(140, 60, 210, 0.08) 60%, transparent 75%);
+}
+
+/* Verdes menta (lado inferior/diagonal) */
+.aurora-bg::after {
+  background:
+    radial-gradient(45% 65% at 30% 72%, rgba(0, 255, 190, 0.35) 0%, rgba(0, 255, 190, 0.07) 60%, transparent 75%),
+    radial-gradient(35% 55% at 60% 82%, rgba(0, 200, 160, 0.30) 0%, rgba(0, 200, 160, 0.07) 60%, transparent 75%),
+    radial-gradient(26% 40% at 82% 42%, rgba(140, 255, 230, 0.20) 0%, rgba(140, 255, 230, 0.05) 55%, transparent 70%);
+}
+
+/* Asegura que el contenido vaya encima de las “luces” */
+.aurora-bg>* {
+  position: relative;
+  z-index: 1;
+}
+
 #correo,
 #password {
   width: 100%;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Button @click="logout">Cerrar Sesión </Button>
+    <Button id="backButton" variant="text" @click="logout" icon="pi pi-sign-out">Cerrar Sesión </Button>
   </div>
 </template>
 
@@ -12,7 +12,12 @@ const router = useRouter();
 
 function logout() {
   router.push({ name: 'login' });
+  localStorage.removeItem('usuario')
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+#backButton {
+  width: auto;
+}
+</style>

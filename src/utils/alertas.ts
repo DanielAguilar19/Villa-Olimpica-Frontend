@@ -9,7 +9,7 @@ export function LanzarAlerta(
     toast: true,
     position: 'top-end',
     showConfirmButton: false,
-    background: '#00000',
+    background: '#f4f4f4',
     timer: 3000,
     timerProgressBar: true,
     didOpen: (toast) => {

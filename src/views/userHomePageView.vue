@@ -4,35 +4,7 @@
 
     <div class="min-h-screen bg-[#0a0f1a] pb-12">
       <!-- Header con menú -->
-      <header class="app-header">
-        <div class="header-content">
-          <!-- Logo -->
-          <div class="header-logo">
-            <i class="pi pi-trophy text-2xl text-yellow-400"></i>
-            <span class="text-xl font-bold text-white ml-2">Villa Olímpica</span>
-          </div>
-
-          <!-- Barra de búsqueda (centro) -->
-          <div class="header-search hidden md:flex">
-            <IconField iconPosition="left">
-              <InputIcon class="pi pi-search" />
-              <InputText v-model="searchQuery" placeholder="Buscar disciplinas o cursos" class="search-input" />
-            </IconField>
-          </div>
-
-          <!-- Acciones del header (derecha) -->
-          <div class="header-actions">
-            <!-- Home -->
-            <Button label="Home" icon="pi pi-home" text @click="irA('home')" class="btn-home hidden md:inline-flex " />
-
-            <!-- Perfil -->
-            <Button label="Perfil" icon="pi pi-user" text class="btn-perfil" @click="irAlPerfil" />
-
-            <!-- Cerrar sesión -->
-            <logoutButton />
-          </div>
-        </div>
-      </header>
+      <HeaderComponent />
 
       <!-- Header con carrusel de imágenes -->
       <div class="hero-section relative overflow-hidden">
@@ -210,14 +182,11 @@ import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 //import Tag from 'primevue/tag'
 //import ProgressBar from 'primevue/progressbar'
-import InputText from 'primevue/inputtext'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import logoutButton from '@/components/UI/logoutButton.vue';
+import HeaderComponent from '@/components/Layouts/headerComponent.vue'
 
 const router = useRouter()
 
-const searchQuery = ref('')
+//const searchQuery = ref('')
 
 const usuarioGuardado = localStorage.getItem('usuario')
 const nombreUsuario = ref('Usuario')
@@ -303,13 +272,13 @@ onUnmounted(() => {
 /*const cursosActivos = ref([])*/
 
 // Métodos
-const irA = (routeName: string) => router.push({ name: routeName })
 const verDisciplinas = () => router.push({ name: 'disciplinas' })
 const explorarCursos = () => router.push({ name: 'cursos' })
 const gestionarReservas = () => router.push({ name: 'reservas' })
 const verTodasReservas = () => router.push({ name: 'reservas' })
 const continuarCursos = () => router.push({ name: 'cursos' })
-const irAlPerfil = () => router.push({ name: 'perfil' })
+//const irA = (routeName: string) => router.push({ name: routeName })
+//const irAlPerfil = () => router.push({ name: 'perfil' })
 
 
 
