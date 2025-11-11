@@ -2,40 +2,32 @@ name: qa → main
 
 on:
   workflow_run:
-    workflows: [ "Node CI" ]
-    types: [ "completed" ]
+    workflows: ['Node CI']
+    types: [completed]
 
 jobs:
-  promote:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'qa' }}
+  open-pr:
+    if: >-
+      ${{
+        github.event.workflow_run.conclusion == 'success' &&
+        (
+          github.event.workflow_run.head_branch == 'qa' ||
+          (github.event.workflow_run.pull_requests && github.event.workflow_run.pull_requests[0] &&
+           github.event.workflow_run.pull_requests[0].head.ref == 'qa')
+        )
+      }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
-
     steps:
-      - name: Checkout target branch (main)
-        uses: actions/checkout@v4
+      - name: Open PR qa → main
+        uses: repo-sync/pull-request@v2
         with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Create/Update PR qa → main
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: sync/qa-to-main
-          title: "Promote qa → main"
-          body: "PR automático tras CI exitoso en **qa**."
-          commit-message: "chore: sync qa → main"
-          labels: auto, promote
-          delete-branch: true
-
-      - name: Merge qa into working branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin qa:qa
-          git checkout -B sync/qa-to-main
-          git merge --no-ff origin/qa -m "chore: merge qa → main (auto)"
+          source_branch: 'qa'
+          destination_branch: 'main'
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
+          pr_title: 'Promote qa → main'
+          pr_body: 'PR automático tras CI exitoso en **qa**.'
+          pr_label: 'auto,promote'
+          pr_allow_empty: false

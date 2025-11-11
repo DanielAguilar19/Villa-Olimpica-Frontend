@@ -1,4 +1,5 @@
 import type { login } from '@/interfaces/auth/ILogin'
+import { LanzarAlerta } from '@/utils/alertas'
 import axios from 'axios'
 
 export const loginUsuarios = async (usuario: login) => {
@@ -9,6 +10,7 @@ export const loginUsuarios = async (usuario: login) => {
 
     return response.data
   } catch (error) {
+    LanzarAlerta('Error haciendo login, revise las credenciales', 'error')
     console.error('Error haciendo login:', error)
     throw error
   }
