@@ -38,4 +38,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin qa:qa
           git checkout -B sync/qa-to-main
-          git merge --no-ff origin/qa -m "chore: merge qa → main (auto)"
+          git merge --no-ff origin qa -m "chore: merge qa → main (auto)"
