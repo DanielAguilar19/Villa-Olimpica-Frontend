@@ -1,5 +1,10 @@
 export default [
   {
+    path: '/',
+    name: 'base',
+    redirect: { name: 'login' },
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import('@/features/auth/views/loginView.vue'),

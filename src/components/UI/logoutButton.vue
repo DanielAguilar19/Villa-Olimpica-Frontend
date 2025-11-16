@@ -12,7 +12,11 @@ const router = useRouter();
 
 function logout() {
   router.push({ name: 'login' });
-  localStorage.removeItem('usuario')
+  localStorage.removeItem('id')
+  localStorage.removeItem('correo')
+  localStorage.removeItem('username')
+  localStorage.removeItem('rol')
+  localStorage.setItem('auth', "false")
 }
 </script>
 

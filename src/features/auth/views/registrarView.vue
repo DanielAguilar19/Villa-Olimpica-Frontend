@@ -30,7 +30,8 @@
           <!-- Contraseña -->
           <div class="flex flex-col gap-2">
             <FloatLabel class="w-full">
-              <InputText id="password" v-model="form.password" :feedback="false" input-class="w-full" required />
+              <Password id="password" toggle-mask v-model="form.password" :feedback="false" input-class="w-full"
+                required />
               <label for="password">Ingrese su contraseña</label>
             </FloatLabel>
           </div>
@@ -64,6 +65,7 @@ import { useRouter } from 'vue-router'
 import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import Password from 'primevue/password'
 import FloatLabel from 'primevue/floatlabel'
 import axios from 'axios'
 import type { crearUsuario } from '@/interfaces/usuarios/usuario'

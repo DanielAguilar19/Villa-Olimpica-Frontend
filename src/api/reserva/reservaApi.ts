@@ -3,6 +3,7 @@ import axios from 'axios'
 
 const usuario: usuario = JSON.parse(localStorage.getItem('usuario') || '{}')
 export async function reservarSimple(
+  username: number,
   instalacionId: number,
   fechaYYYYMMDD: string,
   horaHHmm: string,
@@ -12,6 +13,7 @@ export async function reservarSimple(
     usuario.id,
     {
       params: {
+        username,
         instalacionId,
         fecha: fechaYYYYMMDD,
         hora: horaHHmm,

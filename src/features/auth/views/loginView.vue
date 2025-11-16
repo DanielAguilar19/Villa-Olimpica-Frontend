@@ -81,7 +81,12 @@ async function onSubmit() {
     })
 
     if (response) {
-      localStorage.setItem('usuario', JSON.stringify(response))
+      localStorage.setItem('id', response.id)
+      localStorage.setItem('correo', response.correo)
+      localStorage.setItem('username', response.nombre)
+      localStorage.setItem('rol', response.tipoUsuario)
+      localStorage.setItem('auth', "true")
+
       await router.push({ name: 'home' })
     }
   } catch (err: unknown) {

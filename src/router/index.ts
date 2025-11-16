@@ -8,14 +8,15 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [...rutasAuth, ...rutasUsuario, ...rutasDisciplinas, ...rutasDisponibilidad],
 })
-/*
+
 router.beforeEach((to, from, next) => {
   let isAuthenticated = false
-  if (localStorage.getItem('usuario')) {
+  const rol = localStorage.getItem('rol')
+  if (rol) {
     isAuthenticated = true
   }
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
+  if (to.meta.requiresAuthExt && rol === 'EXTERNO' && !isAuthenticated) {
     // Si la ruta requiere auth y NO está autenticado, va al login
     next({ name: 'login' })
   } else if ((to.name === 'login' || to.name === 'registrar') && isAuthenticated) {
@@ -25,5 +26,5 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-*/
+
 export default router
