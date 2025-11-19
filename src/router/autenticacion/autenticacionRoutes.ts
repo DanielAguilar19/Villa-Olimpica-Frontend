@@ -20,7 +20,7 @@ export default [
   {
     path: '/home',
     name: 'home',
-    component: () => import('@/views/homeView.vue'),
+    component: () => import('@/views/userHomePageView.vue'),
   },
     {
     path: '/disciplinas',
