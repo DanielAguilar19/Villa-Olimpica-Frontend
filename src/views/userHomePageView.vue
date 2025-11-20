@@ -270,12 +270,19 @@ onUnmounted(() => {
 
 // Cursos activos
 /*const cursosActivos = ref([])*/
-
 // Métodos
 const verDisciplinas = () => router.push({ name: 'disciplinas' })
 const explorarCursos = () => router.push({ name: 'cursos' })
 const gestionarReservas = () => router.push({ name: 'reservas' })
-const verTodasReservas = () => router.push({ name: 'reservas' })
+const verTodasReservas = () => {
+  const id = localStorage.getItem('id');
+  if (!id) {
+    console.warn('No user id found in localStorage');
+    return;
+  }
+
+  router.push({ name: 'ReservasUsuario', params: { usuarioId: id } });
+};
 const continuarCursos = () => router.push({ name: 'cursos' })
 //const irA = (routeName: string) => router.push({ name: routeName })
 //const irAlPerfil = () => router.push({ name: 'perfil' })

@@ -1,3 +1,4 @@
+import type { obtenerReservas } from '@/interfaces/reserva/reserva'
 import type { usuario } from '@/interfaces/usuarios/usuario'
 import axios from 'axios'
 
@@ -21,4 +22,11 @@ export async function reservarSimple(
     },
   )
   return data
+}
+
+export const reservasApi = {
+  async getAllByUsuario(usuarioId: number): Promise<obtenerReservas[]> {
+    const res = await axios.get(`${import.meta.env.VITE_API}/reservas/usuario/${usuarioId}/all`)
+    return res.data
+  },
 }

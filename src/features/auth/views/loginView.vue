@@ -66,6 +66,13 @@ const errorMsg = ref('')
 
 const canSubmit = computed(() => form.correo.trim().length > 0 && form.password.length > 0)
 
+//  mapa rol → nombre de ruta
+const ROLE_ROUTE_MAP: Record<string, string> = {
+  ADMIN: 'adminHome',
+  INSTRUCTOR: 'instructorHome',
+  EXTERNO: 'home',
+}
+
 onMounted(() => {
   localStorage.removeItem('usuario')
 })
@@ -74,27 +81,37 @@ async function onSubmit() {
   if (!canSubmit.value) return
   loading.value = true
   errorMsg.value = ''
+
   try {
     const response = await loginUsuarios({
       correo: form.correo.trim(),
-      password: form.password
+      password: form.password,
     })
 
     if (response) {
-      localStorage.setItem('id', response.id)
+      // normalizamos tipoUsuario por si viene con espacios o minúsculas
+      const rawTipo = (response.tipoUsuario ?? '').toString().trim().toUpperCase()
+
+      localStorage.setItem('id', String(response.id))
       localStorage.setItem('correo', response.correo)
       localStorage.setItem('username', response.nombre)
-      localStorage.setItem('rol', response.tipoUsuario)
-      localStorage.setItem('auth', "true")
+      localStorage.setItem('rol', rawTipo)
+      localStorage.setItem('auth', 'true')
 
-      await router.push({ name: 'home' })
+      const targetRouteName = ROLE_ROUTE_MAP[rawTipo] ?? 'home'
+
+      await router.push({ name: targetRouteName })
     }
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
-      errorMsg.value = (err.response?.data)?.message
-        ?? (err.response?.status === 500 ? 'Credenciales inválidas.' : 'No se pudo iniciar sesión.')
+      errorMsg.value =
+        err.response?.data?.message ??
+        (err.response?.status === 500
+          ? 'Credenciales inválidas.'
+          : 'No se pudo iniciar sesión.')
     } else {
       errorMsg.value = 'Error inesperado.'
+      console.log(err)
     }
   } finally {
     loading.value = false
@@ -103,9 +120,9 @@ async function onSubmit() {
 
 function registrarcuenta() {
   router.push({ name: 'registrar' })
-
 }
 </script>
+
 
 <style scoped>
 #correo,
