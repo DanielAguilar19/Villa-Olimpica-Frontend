@@ -35,8 +35,8 @@
             <Button type="submit" label="Ingresar" icon="pi pi-sign-in" :loading="loading"
               :disabled="loading || !canSubmit" />
             <Divider align="center">o</Divider>
-            <Button @click="registrarcuenta()" label="Crear cuenta" icon="pi pi-user-plus" severity="secondary" outlined
-              class="w-full" />
+           <!-- <Button @click="registrarcuenta()" label="Crear cuenta" icon="pi pi-user-plus" severity="secondary" outlined
+              class="w-full" /> -->
           </div>
         </form>
       </template>
@@ -80,15 +80,11 @@ async function onSubmit() {
       await router.push({ name: 'home' })
     }
   } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      errorMsg.value = (err.response?.data)?.message
-        ?? (err.response?.status === 500 ? 'Credenciales inválidas.' : 'No se pudo iniciar sesión.')
-    } else {
+    
       errorMsg.value = 'Error inesperado.'
-    }
-  } finally {
+  
     loading.value = false
-  }
+  
 }
 
 

@@ -7,17 +7,17 @@ import router from './router'
 import './assets/styles/main.css'
 
 import PrimeVue from 'primevue/config'
+import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
 
-import Aura from '@primeuix/themes/aura'
 import 'primeicons/primeicons.css'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(PrimeVue, {
-  theme: {
-    preset: Aura,
-  },
-})
+app.use(PrimeVue)                    // Sin tema personalizado
+app.use(ToastService)
+app.use(ConfirmationService)
+
 app.mount('#app')

@@ -10,6 +10,20 @@ export default [
       component: () => import('@/features/auth/views/registrarView.vue'),
     },
 
+    {
+    path: '/mis-cursos',
+    name: 'mis-cursos',
+    component: () => import('@/views/MisCursosView.vue'),
+    meta: { requiresAuth: false } // ← Cambiar a false temporalmente
+  }
+,
+
+{
+  path: '/mis-cursos-instructor',
+  name: 'mis-cursos-instructor',
+  component: () => import('@/views/MisCursosInstructorView.vue'),
+  meta: { requiresAuth: true }
+},
     // Rutas protegidas
     // RUTAS PRIVADAS (requieren autenticación)
     {

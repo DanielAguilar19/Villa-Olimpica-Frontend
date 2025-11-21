@@ -1,7 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Toast from 'primevue/toast'
+import ConfirmDialog from 'primevue/confirmdialog'
+</script>
 
 <template>
   <Router-view class="content" />
+  <Toast />
+  <ConfirmDialog />
+  <router-view />
 </template>
 
 <style scoped>
@@ -11,3 +17,4 @@
   width: 100%;
 }
 </style>
+
