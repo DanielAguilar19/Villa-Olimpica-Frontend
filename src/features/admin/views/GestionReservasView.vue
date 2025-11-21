@@ -9,7 +9,7 @@
       </div>
       <button @click="exportarReservas" class="btn-secondary">
         <span class="btn-icon">
-          <i class="pi pi-file-export" style="color: #10B981;"></i>
+          <i class="pi pi-cloud-download" style="color: #2563eb; font-size: 1.3rem;"></i>
         </span>
         Exportar
       </button>
@@ -55,8 +55,8 @@
 
       <div class="filters-actions">
         <button @click="limpiarFiltros" class="btn-clear">
-          <i class="pi pi-trash" style="color: #6B7280;"></i>
-          Limpiar filtros   
+          <i class="pi pi-trash" style="color: white;"></i>
+          Limpiar filtros
         </button>
         <div class="results-count">
           {{ reservasFiltradas.length }} reserva(s)
@@ -125,7 +125,9 @@
                     class="btn-action btn-cancel"
                     title="Cancelar reserva"
                   >
-                    ❌
+                    <i class="pi pi-calendar-times" style="color: red; font-size: 1.3rem;"></i>
+
+
                   </button>
                 </div>
               </td>
@@ -227,7 +229,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 
-// Interfaces 
+// Interfaces
 interface Reserva {
   id: number;
   instalacionId: number;
@@ -585,7 +587,7 @@ const getEstadoLabel = (estado: string): string => {
 .select-filter,
 .date-filter {
   padding: 0.875rem 1rem;
-  border: 2px solid #94bdf4;
+  border: 2px solid lightgray;
   border-radius: 0.5rem;
   font-size: 0.9375rem;
   background: #f6f6f7;
@@ -598,6 +600,7 @@ const getEstadoLabel = (estado: string): string => {
   filter: invert(0.5) grayscale(100%);
   cursor: pointer;
   padding: 0.25rem;
+  color: gray;
 }
 
 .date-filter::-webkit-calendar-picker-indicator:hover {
@@ -607,7 +610,7 @@ const getEstadoLabel = (estado: string): string => {
 
 .date-filter:focus {
   outline: none;
-  border-color: #3B82F6;
+  border-color: lightgray;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -624,8 +627,8 @@ const getEstadoLabel = (estado: string): string => {
 
 .btn-clear {
   padding: 0.5rem 1rem;
-  background: #bcedfa;
-  color: #6B7280;
+  background: rgb(158, 158, 158);
+  color: white;
   border: none;
   border-radius: 0.375rem;
   font-size: 0.875rem;
@@ -635,7 +638,7 @@ const getEstadoLabel = (estado: string): string => {
 }
 
 .btn-clear:hover {
-  background: #d2f5ff;
+  background: #aab0b1;
 }
 
 .results-count {
@@ -703,6 +706,8 @@ tr:hover {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  color: darkblue;
+  font-weight: 600;
 }
 
 .user-avatar {
@@ -723,7 +728,7 @@ tr:hover {
   padding: 0.375rem 0.875rem;
   background: #f1f5f9;
   border-radius: 0.375rem;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: #475569;
 }

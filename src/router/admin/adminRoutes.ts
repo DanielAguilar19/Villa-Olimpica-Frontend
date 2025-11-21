@@ -2,22 +2,31 @@ export default [
   {
     path: '/admin',
     component: () => import('@/components/Layouts/AdminLayout.vue'),
-    // TEMPORAL: Sin autenticación 
+    meta: {
+      requiresAuth: true,
+      layout: 'admin'
+    },
     children: [
       {
         path: '',
-        redirect: 'reservas' // Temporal: Redirige directo a reservas
+        name: 'AdminDashboard',
+        //  REDIRECCIÓN x mientras
+        redirect: '/admin/reservas'
       },
       {
         path: 'reservas',
-        name: 'AdminReservas',
-        component: () => import('@/features/admin/views/GestionReservasView.vue')
+        name: 'GestionReservas',
+        component: () => import('@/features/admin/views/GestionReservasView.vue'),
       },
+
+      // 3. Gestión de Disciplinas
       {
-        path: 'disciplinas',
-        name: 'AdminDisciplinas',
-        component: () => import('@/features/admin/views/GestionDisciplinasView.vue')
-      }
+        path: 'disciplinas', // La ruta final será /admin/disciplinas
+        name: 'GestionDisciplinas',
+        component: () => import('@/features/admin/views/GestionDisciplinasView.vue'),
+      },
     ]
   }
 ];
+
+

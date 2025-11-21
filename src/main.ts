@@ -15,6 +15,11 @@ import Aura from '@primeuix/themes/aura'
 import 'primeicons/primeicons.css'
 import VueSweetalert2 from 'vue-sweetalert2'
 
+import DataTable from 'primevue/datatable';
+import InputText from 'primevue/inputtext';
+import ConfirmDialog from 'primevue/confirmdialog';
+import Tooltip from 'primevue/tooltip'; // Tooltip como directiva
+
 const app = createApp(App)
 
 app.use(createPinia())
@@ -27,4 +32,11 @@ app.use(PrimeVue, {
     preset: Aura,
   },
 })
+
+
+app.component('DataTable', DataTable);
+app.component('InputText', InputText);
+app.component('ConfirmDialog', ConfirmDialog);
+app.directive('tooltip', Tooltip);
+
 app.mount('#app')
