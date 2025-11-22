@@ -226,6 +226,12 @@ onMounted(() => {
   backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1rem 1.5rem;
+
+   
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .header-content {

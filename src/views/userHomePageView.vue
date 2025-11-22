@@ -369,10 +369,10 @@ onUnmounted(() => {
 // Métodos
 const irA = (routeName: string) => router.push({ name: routeName })
 const verDisciplinas = () => router.push({ name: 'disciplinas' })
-const explorarCursos = () => router.push({ name: 'cursos' })
+const explorarCursos = () => router.push({ name: 'mis-cursos' })
 const gestionarReservas = () => router.push({ name: 'reservas' })
 const verTodasReservas = () => router.push({ name: 'reservas' })
-const continuarCursos = () => router.push({ name: 'cursos' })
+const continuarCursos = () => router.push({name: 'mis-cursos'  })
 const irAlPerfil = () => router.push({ name: 'perfil' })
 
 const cerrarSesion = () => {
@@ -389,6 +389,7 @@ const cerrarSesion = () => {
     }
   })
 }
+
 
 /*
 const getEstadoSeverity = (estado: string) => {

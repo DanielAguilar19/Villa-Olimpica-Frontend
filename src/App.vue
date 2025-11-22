@@ -7,7 +7,6 @@ import ConfirmDialog from 'primevue/confirmdialog'
   <Router-view class="content" />
   <Toast />
   <ConfirmDialog />
-  <router-view />
 </template>
 
 <style scoped>

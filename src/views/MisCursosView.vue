@@ -289,3 +289,77 @@ onMounted(() => {
   cargarCursos();
 });
 </script>
+
+<style scoped>
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: rgba(17, 25, 40, 0.8);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem 1.5rem;
+}
+
+.header-content {
+  max-width: 1800px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.glass-card {
+  background: rgba(17, 25, 40, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  background: rgba(17, 25, 40, 0.8);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.curso-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(168, 85, 247, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.btn-home {
+  color: #f8f9f5;
+  transition: all 0.3s ease;
+}
+
+.btn-home:hover {
+  color: #7dd3fc;
+  text-shadow: 0 0 8px rgba(125, 211, 252, 0.5);
+}
+</style>
