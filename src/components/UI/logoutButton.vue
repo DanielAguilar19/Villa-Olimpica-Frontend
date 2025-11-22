@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from 'primevue';
+
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

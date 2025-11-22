@@ -8,16 +8,17 @@ import './assets/styles/main.css'
 
 import PrimeVue from 'primevue/config'
 
-import Aura from '@primeuix/themes/aura'
+
+import "primevue/resources/themes/saga-blue/theme.css"
+
+
+import "primevue/resources/primevue.min.css"
 import 'primeicons/primeicons.css'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-app.use(PrimeVue, {
-  theme: {
-    preset: Aura,
-  },
-})
+app.use(PrimeVue)
+
 app.mount('#app')

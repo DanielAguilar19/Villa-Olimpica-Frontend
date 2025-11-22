@@ -1,4 +1,4 @@
-<template>
+npm run devP<template>
 <body class="bg-[#0a0f1a]">
 
   <div class="min-h-screen bg-[#0a0f1a] pb-12">
@@ -288,7 +288,7 @@ const nombreUsuario = ref('Usuario')
 
 if (usuarioGuardado) {
   const usuario = JSON.parse(usuarioGuardado)
-  nombreUsuario.value = usuario.nombre 
+  nombreUsuario.value = usuario.nombre
 }
 
 // Imágenes del carrusel
@@ -429,14 +429,14 @@ const getEstadoStyle = (estado: string) => {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  justify-content: space-between; 
+  justify-content: space-between;
 }
 
 .header-logo {
   display: flex;
   align-items: center;
     gap: 0.6rem;
-  
+
 }
 
 
@@ -469,7 +469,7 @@ justify-content: center;
 
 /* Botón Home */
 .header-actions .btn-home {
-  color: #f8f9f5; 
+  color: #f8f9f5;
   transition: all 0.3s ease;
 }
 .header-actions .btn-home:hover {
@@ -479,7 +479,7 @@ justify-content: center;
 
 /* Botón Perfil */
 .header-actions .btn-perfil {
-  color: #f8f9f5; 
+  color: #f8f9f5;
   transition: all 0.3s ease;
 }
 .header-actions .btn-perfil:hover {
@@ -489,7 +489,7 @@ justify-content: center;
 
 /* Botón Salir */
 .header-actions .btn-salir {
-  color: #f87171; 
+  color: #f87171;
   transition: all 0.3s ease;
 }
 .header-actions .btn-salir:hover {
