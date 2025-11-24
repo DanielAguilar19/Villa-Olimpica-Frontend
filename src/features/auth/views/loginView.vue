@@ -56,7 +56,8 @@ import Divider from 'primevue/divider'
 import FloatLabel from 'primevue/floatlabel'
 import type { login } from '@/interfaces/auth/ILogin'
 import { loginUsuarios } from '@/api/auth/loginApi'
-import axios from 'axios'
+import { loginResponse } from '@/interfaces/auth/ILogin'
+import { LanzarAlerta } from '@/utils/alertas'
 
 const router = useRouter()
 
@@ -76,7 +77,6 @@ const ROLE_ROUTE_MAP: Record<string, string> = {
 onMounted(() => {
   localStorage.removeItem('usuario')
 })
-
 async function onSubmit() {
   if (!canSubmit.value) return
   loading.value = true
@@ -86,7 +86,7 @@ async function onSubmit() {
     const response = await loginUsuarios({
       correo: form.correo.trim(),
       password: form.password,
-    })
+    }) as loginResponse | null
 
     if (response) {
       // normalizamos tipoUsuario por si viene con espacios o minúsculas
@@ -102,19 +102,12 @@ async function onSubmit() {
 
       await router.push({ name: targetRouteName })
     }
-  } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      errorMsg.value =
-        err.response?.data?.message ??
-        (err.response?.status === 500
-          ? 'Credenciales inválidas.'
-          : 'No se pudo iniciar sesión.')
-    } else {
-      errorMsg.value = 'Error inesperado.'
-      console.log(err)
-    }
+  } catch (error) {
+    LanzarAlerta('Error al iniciar sesión. Verifique sus credenciales.', 'error')
+    console.log('Error al iniciar sesión:', error)
   } finally {
     loading.value = false
+
   }
 }
 

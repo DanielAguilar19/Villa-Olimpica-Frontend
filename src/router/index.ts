@@ -33,7 +33,6 @@ router.beforeEach((to, from, next) => {
     // Si la ruta requiere auth y NO está autenticado, va al login
     next({ name: 'login' })
   } else if ((to.name === 'login' || to.name === 'registrar') && isAuthenticated) {
-    // Si YA está autenticado e intenta ir al login, va al home
     next({ name: 'home' })
   } else {
     next()

@@ -67,9 +67,9 @@ import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Password from 'primevue/password'
 import FloatLabel from 'primevue/floatlabel'
-import axios from 'axios'
 import type { crearUsuario } from '@/interfaces/usuarios/usuario'
 import { crearUsuarioFinal } from '@/api/usuarios/usuariosApi'
+import { LanzarAlerta } from '@/utils/alertas'
 
 const router = useRouter()
 //POR DEFECTO SIEMPRE EN LA PAGINA DE REGISTRO SE VAN A CREAR USUARIOS TIPO 1 QUE SON LOS EXTERNOS ES DECIR USUARIO FINAL
@@ -99,13 +99,9 @@ async function onSubmit() {
     if (response) {
       await router.push({ name: 'login' })
     }
-  } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      errorMsg.value = (err.response?.data)?.message
-        ?? (err.response?.status === 500 ? 'Valide que los campos se hayan llenado.' : 'Error creando su cuenta.')
-    } else {
-      errorMsg.value = 'Error inesperado.'
-    }
+  } catch (error) {
+    LanzarAlerta('Error al registrar el usuario. Valide los campos.', 'error')
+    console.error('Error al registrar usuario:', error)
   } finally {
     loading.value = false
   }
