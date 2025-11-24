@@ -8,7 +8,8 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    //vueDevTools(),//desactivar termporalmente
+
   ],
   resolve: {
     alias: {

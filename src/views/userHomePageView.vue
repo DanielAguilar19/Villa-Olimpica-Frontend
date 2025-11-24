@@ -194,6 +194,7 @@ const nombreUsuario = ref('Usuario')
 if (usuarioGuardado) {
   const usuario = JSON.parse(usuarioGuardado)
   nombreUsuario.value = usuario.nombre
+  nombreUsuario.value = usuario.nombre
 }
 
 // Imágenes del carrusel
@@ -330,6 +331,7 @@ const getEstadoStyle = (estado: string) => {
   align-items: center;
   gap: 1.5rem;
   justify-content: space-between;
+  justify-content: space-between;
 }
 
 .header-logo {
@@ -370,6 +372,7 @@ const getEstadoStyle = (estado: string) => {
 /* Botón Home */
 .header-actions .btn-home {
   color: #f8f9f5;
+  color: #f8f9f5;
   transition: all 0.3s ease;
 }
 
@@ -381,6 +384,7 @@ const getEstadoStyle = (estado: string) => {
 /* Botón Perfil */
 .header-actions .btn-perfil {
   color: #f8f9f5;
+  color: #f8f9f5;
   transition: all 0.3s ease;
 }
 
@@ -391,6 +395,7 @@ const getEstadoStyle = (estado: string) => {
 
 /* Botón Salir */
 .header-actions .btn-salir {
+  color: #f87171;
   color: #f87171;
   transition: all 0.3s ease;
 }
