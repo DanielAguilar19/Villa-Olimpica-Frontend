@@ -11,31 +11,25 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
-      - name: Checkout target branch (main)
+      - name: Checkout main branch
         uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
-
-      - name: Create/Update PR qa → main
-        uses: peter-evans/create-pull-request@v7
-        with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: sync/qa-to-main
-          title: "Promote qa → main"
-          body: "PR automático tras CI exitoso en **qa**."
-          commit-message: "chore: sync qa → main"
-          labels: auto, promote
-          delete-branch: true
 
-      - name: Merge qa into working branch
+      - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin qa:qa
-          git checkout -B sync/qa-to-main
-          git merge --no-ff origin qa -m "chore: merge qa → main (auto)"
+
+      - name: Merge qa into main
+        run: |
+          git fetch origin qa
+          git merge origin/qa --no-ff -m "chore: auto-merge qa → main after successful CI"
+
+      - name: Push changes to main
+        run: |
+          git push origin main

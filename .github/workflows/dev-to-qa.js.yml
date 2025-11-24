@@ -11,35 +11,25 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
-      - name: Checkout target branch (qa)
+      - name: Checkout qa branch
         uses: actions/checkout@v4
         with:
           ref: qa
           fetch-depth: 0
-
-      - name: Create/Update PR dev → qa
-        uses: peter-evans/create-pull-request@v7
-        with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          # fuente (head) = dev, destino (base) = qa
-          base: qa
-          branch: sync/dev-to-qa      # rama temporal que mantiene el bot
-          title: "Promote dev → qa"
-          body: "PR automático tras CI exitoso en **dev**."
-          commit-message: "chore: sync dev → qa"
-          labels: auto, promote
-          delete-branch: true
-          # Importante: especificar el contenido que quieres llevar
-          # Este action crea un commit con el diff desde dev.
-          # Para eso, necesitamos traer dev y hacer merge en el workspace:
-      - name: Merge dev into working branch
+
+      - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch origin dev:dev
-          git checkout -B sync/dev-to-qa
-          git merge --no-ff origin/dev -m "chore: merge dev → qa (auto)"
-          # Si hay conflictos, el job fallará y verás el detalle en el log.
+
+      - name: Merge dev into qa
+        run: |
+          git fetch origin dev
+          git merge origin/dev --no-ff -m "chore: auto-merge dev → qa after successful CI"
+
+      - name: Push changes to qa
+        run: |
+          git push origin qa
