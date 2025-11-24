@@ -8,13 +8,8 @@
           <span class="text-xl font-bold text-white ml-2">Villa Olímpica</span>
         </div>
         <div class="header-actions">
-          <Button
-            label="Volver"
-            icon="pi pi-arrow-left"
-            text
-            @click="$router.push({ name: 'home' })"
-            class="btn-home"
-          />
+          <Button label="Volver" icon="pi pi-arrow-left" text @click="$router.push({ name: 'home' })"
+            class="btn-home" />
         </div>
       </div>
     </header>
@@ -32,27 +27,21 @@
       <!-- Tabs: Activos / Todos -->
       <div class="mb-8">
         <div class="flex gap-4 border-b border-gray-700">
-          <button
-            @click="mostrarTodos = false"
-            :class="[
-              'px-6 py-3 font-semibold transition-all',
-              !mostrarTodos
-                ? 'text-blue-400 border-b-2 border-blue-400'
-                : 'text-gray-400 hover:text-white',
-            ]"
-          >
+          <button @click="mostrarTodos = false" :class="[
+            'px-6 py-3 font-semibold transition-all',
+            !mostrarTodos
+              ? 'text-blue-400 border-b-2 border-blue-400'
+              : 'text-gray-400 hover:text-white',
+          ]">
             <i class="pi pi-check-circle mr-2"></i>
             Activos ({{ cursosActivos.length }})
           </button>
-          <button
-            @click="mostrarTodos = true"
-            :class="[
-              'px-6 py-3 font-semibold transition-all',
-              mostrarTodos
-                ? 'text-blue-400 border-b-2 border-blue-400'
-                : 'text-gray-400 hover:text-white',
-            ]"
-          >
+          <button @click="mostrarTodos = true" :class="[
+            'px-6 py-3 font-semibold transition-all',
+            mostrarTodos
+              ? 'text-blue-400 border-b-2 border-blue-400'
+              : 'text-gray-400 hover:text-white',
+          ]">
             <i class="pi pi-list mr-2"></i>
             Todos ({{ todosCursos.length }})
           </button>
@@ -66,10 +55,7 @@
       </div>
 
       <!-- Sin cursos -->
-      <div
-        v-else-if="cursosAMostrar.length === 0"
-        class="text-center py-12 glass-card"
-      >
+      <div v-else-if="cursosAMostrar.length === 0" class="text-center py-12 glass-card">
         <i class="pi pi-inbox text-6xl text-gray-600 mb-4"></i>
         <h3 class="text-xl font-bold text-white mb-2">No tienes cursos</h3>
         <p class="text-gray-400 mb-6">
@@ -79,29 +65,18 @@
               : 'No tienes cursos activos en este momento'
           }}
         </p>
-        <Button
-          label="Explorar Cursos"
-          icon="pi pi-search"
-          @click="$router.push({ name: 'cursos' })"
-          class="p-button-primary"
-        />
+        <Button label="Explorar Cursos" icon="pi pi-search" @click="$router.push({ name: 'cursos' })"
+          class="p-button-primary" />
       </div>
 
       <!-- Grid de Cursos -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          v-for="curso in cursosAMostrar"
-          :key="curso.id"
-          class="glass-card cursor-pointer hover-lift"
-        >
+        <div v-for="curso in cursosAMostrar" :key="curso.id" class="glass-card cursor-pointer hover-lift">
           <div class="flex items-start justify-between mb-4">
             <div class="curso-icon">
               <i class="pi pi-book text-2xl text-purple-400"></i>
             </div>
-            <Tag
-              :value="getEstadoLabel(curso.estado)"
-              :severity="getEstadoSeverity(curso.estado)"
-            />
+            <Tag :value="getEstadoLabel(curso.estado)" :severity="getEstadoSeverity(curso.estado)" />
           </div>
 
           <h3 class="text-xl font-bold text-white mb-2">{{ curso.titulo }}</h3>
@@ -116,19 +91,11 @@
 
           <!-- Acciones -->
           <div class="flex gap-2 mt-4">
-            <Button
-              label="Ver Detalles"
-              icon="pi pi-eye"
-              class="p-button-sm flex-1"
-              @click="verDetalleCurso(curso.id)"
-            />
-            <Button
-              v-if="curso.estado === 'ACTIVO'"
-              icon="pi pi-times"
-              class="p-button-sm p-button-danger p-button-outlined"
-              @click="confirmarCancelar(curso.id)"
-              v-tooltip.top="'Cancelar inscripción'"
-            />
+            <Button label="Ver Detalles" icon="pi pi-eye" class="p-button-sm flex-1"
+              @click="verDetalleCurso(curso.id)" />
+            <Button v-if="curso.estado === 'ACTIVO'" icon="pi pi-times"
+              class="p-button-sm p-button-danger p-button-outlined" @click="confirmarCancelar(curso.id)"
+              v-tooltip.top="'Cancelar inscripción'" />
           </div>
         </div>
       </div>
@@ -165,8 +132,8 @@ const cursosActivos = ref<CursoCardDTO[]>([]);
 const todosCursos = ref<CursoCardDTO[]>([]);
 
 // Usuario actual (desde localStorage)
-const usuarioGuardado = localStorage.getItem('usuario');
-const usuarioId = usuarioGuardado ? JSON.parse(usuarioGuardado).id : null;
+const usuarioGuardado = localStorage.getItem('username');
+const usuarioId = Number(localStorage.getItem('id'));
 
 // En MisCursosView.vue
 
@@ -235,11 +202,11 @@ const confirmarCancelar = (cursoId: number) => {
 
 const cancelarInscripcionCurso = async (cursoId: number) => {
   try {
-  
-    const inscripcionId = 1; // 
-    
+
+    const inscripcionId = 1;
+    console.log(cursoId)
     await cancelarInscripcion(inscripcionId);
-    
+
     toast.add({
       severity: 'success',
       summary: 'Inscripción cancelada',

@@ -49,7 +49,7 @@
           <div class="caja-izquierda">Contraseña <span class="required">*</span></div>
           <div class="caja-derecha">
             <div class="w-full">
-              <Password v-model="form.password" feedback :toggleMask="true" class="w-full" />
+              <Password v-model="form.password" feedback :toggleMask="true" class="full-input" style="width: 100%;" />
             </div>
             <small v-if="errors.password" class="error-msg">{{ errors.password }}</small>
           </div>
@@ -344,9 +344,26 @@ async function submit() {
     flex-direction: column;
   }
 
+  v::deep(.p-inputtext) {
+    width: 100% !important;
+  }
+
   .btn-primary,
   .btn-ghost {
     width: 100%;
   }
+}
+
+/* Force full width on PrimeVue input components inside caja-derecha */
+::v-deep .p-inputtext,
+::v-deep .p-password,
+::v-deep .p-password input.p-inputtext {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* si usas la clase .w-full en plantillas sin Tailwind, garantizarla */
+::v-deep .w-full {
+  width: 100% !important;
 }
 </style>
