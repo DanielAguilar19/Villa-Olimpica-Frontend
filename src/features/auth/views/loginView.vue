@@ -56,7 +56,7 @@ import Divider from 'primevue/divider'
 import FloatLabel from 'primevue/floatlabel'
 import type { login } from '@/interfaces/auth/ILogin'
 import { loginUsuarios } from '@/api/auth/loginApi'
-import { loginResponse } from '@/interfaces/auth/ILogin'
+import type { loginResponse } from '@/interfaces/auth/ILogin'
 import { LanzarAlerta } from '@/utils/alertas'
 
 const router = useRouter()

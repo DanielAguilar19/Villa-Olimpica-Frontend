@@ -28,7 +28,7 @@
 
         <router-link to="/admin/crear-usuarios" class="nav-item">
           <span class="icon">
-            <i class="pi pi-objects-column"></i>
+            <i class="pi pi-user"></i>
           </span>
           <span class="text">Crear usuarios</span>
         </router-link>

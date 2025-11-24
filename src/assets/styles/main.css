@@ -1,143 +1,74 @@
-/* Tonos profesionales azul/gris */
-:root {
-  --color-primary: #02132b;
-  --color-secondary: #f4f6f8;
-  --color-background: #04193d;
-  --color-text: #180b38;
-  --color-accent: #021e3a;
+@import 'tailwindcss';
+@import './base.css';
+
+/* Altura completa y reset de margen */
+html,
+body,
+#app {
+  height: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
 }
 
-/* Fondo general */
-body {
-  background-color: var(--color-background);
-  color: var(--color-text);
-  font-family: "Poppins", sans-serif; /* Elegante */
+/* Tipografía base del app */
+#app {
+  font-weight: normal;
 }
 
-/* Títulos */
-h1, h2, h3 {
-  color: var(--color-secondary);
+/* Estilos de enlaces */
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
 }
 
-/* Botones */
-button {
-  background-color: var(--color-primary);
-  color: rgba(248, 246, 246, 0.473);
-  border-radius: 6px;
-  transition: 0.3s;
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
 }
 
-button:hover {
-  background-color: var(--color-accent);
-}
-:root {
-  --vo-primary-500: #0b5cff;
-  --vo-primary-700: #063a9a;
-  --vo-surface: var(--color-background); /* fondo general */
-  --vo-surface-2: var(--color-background-soft); /* cards / inputs */
-  --vo-text: var(--color-text); /* texto principal */
-  --vo-heading: var(--color-heading); /* headings */
-  --vo-muted: rgba(230, 240, 255, 0.66);
+@media (min-width: 1024px) {
+  body {
+    display: block;
+    place-items: initial;
+  }
+
+  #app {
+    /* display: grid;
+       grid-template-columns: 1fr 1fr; */
+    padding: 0;
+  }
 }
 
-/* Force visibility on common PrimeVue pieces */
-:deep(.p-card),
-:deep(.p-card .p-card-content) {
-  background: linear-gradient(180deg, rgba(3, 37, 65, 0.72), rgba(3, 37, 65, 0.82));
-  color: var(--vo-text) !important;
-  border: 1px solid rgba(255, 255, 255, 0.03);
+/* ===== Utilidades opcionales ===== */
+
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .grid-2col {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-/* Inputs / dropdowns */
-:deep(.p-inputtext),
-:deep(.p-password input),
-:deep(.p-dropdown .p-dropdown-label),
-:deep(.p-dropdown .p-dropdown-trigger),
-:deep(.p-inputtext::placeholder),
-:deep(.p-password .p-password-input) {
-  background: rgba(255, 255, 255, 0.03) !important;
-  color: var(--vo-text) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  box-shadow: none !important;
+.app-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Dropdown panel items */
-:deep(.p-dropdown-panel .p-dropdown-item) {
-  color: var(--vo-text) !important;
-  background: transparent !important;
+.content-full {
+  flex: 1 1 auto;
+  min-height: 100dvh;
+  width: 100%;
 }
 
-/* Ensure labels are visible */
-.label,
-:deep(.p-float-label label) {
-  color: var(--vo-muted) !important;
-  font-weight: 600;
-}
-
-/* Buttons: primary / outlined / danger */
-:deep(.p-button) {
-  background: linear-gradient(180deg, var(--vo-primary-500), var(--vo-primary-700)) !important;
-  border: none !important;
-  color: var(--vo-text) !important;
-  box-shadow: 0 6px 18px rgba(11, 92, 255, 0.12);
-}
-
-:deep(.p-button:hover) {
-  transform: translateY(-1px);
-}
-
-:deep(.p-button.p-button-outlined) {
-  background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  color: var(--vo-text) !important;
-}
-
-:deep(.p-button.p-button-danger),
-:deep(.p-button.p-button-danger:hover) {
-  background: linear-gradient(180deg, #ff6b6b, #ff3b3b) !important;
-  color: white !important;
-}
-
-/* Small button tweaks */
-:deep(.p-button-sm) {
-  padding: 0.45rem 0.7rem !important;
-  font-size: 0.87rem !important;
-}
-
-/* Tags / Badges */
-:deep(.p-tag) {
-  color: var(--vo-text) !important;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid rgba(255, 255, 255, 0.04) !important;
-}
-
-/* Specific severity color hints (optional but nice) */
-:deep(.p-tag.p-tag-success) {
-  background: linear-gradient(90deg, #06b6d4aa, #0b5cff66) !important;
-  color: var(--vo-text) !important;
-}
-:deep(.p-tag.p-tag-info) {
-  background: linear-gradient(90deg, #06b6d4aa, #22c1c3aa) !important;
-  color: var(--vo-text) !important;
-}
-:deep(.p-tag.p-tag-warning) {
-  background: linear-gradient(90deg, #f59e0b66, #f9731677) !important;
-  color: #0f172a !important;
-}
-
-/* Ensure dropdown trigger / caret visible */
-:deep(.p-dropdown .p-dropdown-trigger .p-dropdown-label),
-:deep(.p-dropdown .p-dropdown-trigger .p-button) {
-  color: var(--vo-text) !important;
-}
-
-/* Make sure icons are visible */
-:deep(.pi) {
-  color: var(--vo-text) !important;
-}
-
-/* Debug helper (desactiva removiendo) */
-.debug-force-visible {
-  outline: 2px dashed rgba(255, 255, 255, 0.04);
+.p-card .p-card-content {
+  padding-top: 0.75rem;
 }

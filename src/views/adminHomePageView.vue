@@ -2,7 +2,7 @@
   <div class="admin-home-root">
     <div class="home-header card-like">
       <div>
-        <h2>Bienvenido, {{ userName }}</h2>
+        <h2 class="text-black">Bienvenido, {{ userName }}</h2>
         <p class="subtitle">Panel de administración — accede rápido a las secciones principales</p>
       </div>
     </div>
@@ -56,7 +56,7 @@
       <Card class="home-card card-like">
         <template #title>
           <div class="card-title">
-            <Avatar class="card-avatar" label="R" shape="circle" size="large" />
+            <Avatar class="card-avatar" label="CU" shape="circle" size="large" />
             <div class="card-meta">
               <h3>Crear usuarios</h3>
               <p>Formulario para crear todo tipo de usuarios.</p>
@@ -80,13 +80,12 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Avatar from 'primevue/avatar';
 
 const router = useRouter();
-const userName = ref('Administrador');
+const userName = localStorage.getItem('username') || 'Administrador';
 
 function goTo(path: string) {
   router.push(path);
@@ -106,6 +105,10 @@ function goTo(path: string) {
   margin: 0 auto;
   padding: 0 1rem;
   /* ya el layout agrega padding vertical */
+}
+
+.text-black {
+  color: black !important;
 }
 
 /* Card-like container para header y cards (coincidir con AdminLayout) */

@@ -15,136 +15,136 @@
       </button>
     </div>
 
-    <!-- Filtros  -->
-    <div class="filters-section">
-      <div class="filters-row">
-        <div class="search-box">
-          <span class="search-icon">
-            <i class="pi pi-search" style="color: #9CA3AF; font-size: 1.4rem;"></i>
-          </span>
-          <input
-            v-model="filtros.busqueda"
-            type="text"
-            placeholder="Buscar por usuario, instalación..."
-            class="search-input"
-          />
-        </div>
-
-        <select v-model="filtros.estado" class="select-filter">
-          <option value=""> Todos los estados</option>
-          <option value="activa"> Activa</option>
-          <option value="pendiente"> Pendiente</option>
-          <option value="confirmada"> Confirmada</option>
-          <option value="completada"> Completada</option>
-          <option value="cancelada"> Cancelada</option>
-        </select>
-
-        <select v-model="filtros.disciplina" class="select-filter">
-          <option value=""> Todas las disciplinas</option>
-          <option v-for="disc in disciplinas" :key="disc.id" :value="disc.nombre">
-            {{ disc.nombre }}
-          </option>
-        </select>
-
-        <input
-          v-model="filtros.fecha"
-          type="date"
-          class="date-filter"
-        />
-      </div>
-
-      <div class="filters-actions">
-        <button @click="limpiarFiltros" class="btn-clear">
-          <i class="pi pi-trash" style="color: white;"></i>
-          Limpiar filtros
-        </button>
-        <div class="results-count">
-          {{ reservasFiltradas.length }} reserva(s)
-        </div>
-      </div>
+    <!-- Loading State -->
+    <div v-if="loading" class="loading-state">
+      <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #3b82f6;"></i>
+      <p>Cargando reservas...</p>
     </div>
 
-    <!-- Tabla de reservas -->
-    <div class="card">
-      <div class="table-container">
-        <table v-if="reservasFiltradas.length > 0">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Usuario</th>
-              <th>Disciplina</th>
-              <th>Instalación</th>
-              <th>Fecha</th>
-              <th>Horario</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="reserva in reservasFiltradas" :key="reserva.id">
-              <td class="id-column">#{{ reserva.id }}</td>
-              <td>
-                <div class="user-info">
-                  <div class="user-avatar">{{ getInitials(reserva.usuario) }}</div>
-                  <strong>{{ reserva.usuario }}</strong>
-                </div>
-              </td>
-              <td>
-                <span class="disciplina-tag">{{ reserva.disciplina }}</span>
-              </td>
-              <td>{{ reserva.instalacion }}</td>
-              <td>{{ formatDate(reserva.fecha) }}</td>
-              <td>
-                <span class="horario">{{ reserva.horaInicio }} - {{ reserva.horaFin }}</span>
-              </td>
-              <td>
-                <span :class="['badge', `badge-${reserva.estado}`]">
-                  {{ getEstadoLabel(reserva.estado) }}
-                </span>
-              </td>
-              <td class="actions-column">
-                <div class="action-buttons">
-                  <button
-                    @click="verDetalle(reserva)"
-                    class="btn-action btn-view"
-                    title="Ver detalles"
-                  >
-                    <i class="pi pi-info-circle" style="color: #F59E0B; font-size: 1.3rem;"></i>
-                  </button>
-                  <button
-                    v-if="reserva.estado === 'pendiente'"
-                    @click="confirmarReserva(reserva)"
-                    class="btn-action btn-confirm"
-                    title="Confirmar reserva"
-                  >
-                    ✅
-                  </button>
-                  <button
-                    v-if="reserva.estado !== 'cancelada' && reserva.estado !== 'completada'"
-                    @click="cancelarReserva(reserva)"
-                    class="btn-action btn-cancel"
-                    title="Cancelar reserva"
-                  >
-                    <i class="pi pi-calendar-times" style="color: red; font-size: 1.3rem;"></i>
+    <!-- Error State -->
+    <div v-else-if="error" class="error-state">
+      <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: #ef4444;"></i>
+      <p>Error al cargar reservas</p>
+      <button @click="cargarReservas" class="btn-primary">Reintentar</button>
+    </div>
 
+    <!-- Content -->
+    <template v-else>
+      <!-- Filtros  -->
+      <div class="filters-section">
+        <div class="filters-row">
+          <div class="search-box">
+            <span class="search-icon">
+              <i class="pi pi-search" style="color: #9CA3AF; font-size: 1.4rem;"></i>
+            </span>
+            <input v-model="filtros.busqueda" type="text" placeholder="Buscar por usuario, instalación..."
+              class="search-input" />
+          </div>
 
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <select v-model="filtros.estado" class="select-filter">
+            <option value="">Todos los estados</option>
+            <option value="activa">Activa</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="completada">Completada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
 
-        <!-- Estado vacío -->
-        <div v-else class="empty-state">
-          <span class="empty-icon">
-            <i class="pi pi-calendar-times" style="color: #6B7280; font-size: 5rem;"></i>
-          </span>
-          <h3>No se encontraron reservas</h3>
-          <p>{{ filtros.busqueda || filtros.estado || filtros.disciplina ? 'Intenta ajustar los filtros' : 'Aún no hay reservas registradas' }}</p>
+          <select v-model="filtros.disciplina" class="select-filter">
+            <option value="">Todas las disciplinas</option>
+            <option v-for="disc in disciplinasUnicas" :key="disc" :value="disc">
+              {{ disc }}
+            </option>
+          </select>
+
+          <input v-model="filtros.fecha" type="date" class="date-filter" />
+        </div>
+
+        <div class="filters-actions">
+          <button @click="limpiarFiltros" class="btn-clear">
+            <i class="pi pi-trash" style="color: white;"></i>
+            Limpiar filtros
+          </button>
+          <div class="results-count">
+            {{ reservasFiltradas.length }} reserva(s)
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- Tabla de reservas -->
+      <div class="card">
+        <div class="table-container">
+          <table v-if="reservasFiltradas.length > 0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Disciplina</th>
+                <th>Instalación</th>
+                <th>Fecha</th>
+                <th>Horario</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="reserva in reservasFiltradas" :key="reserva.id">
+                <td class="id-column">#{{ reserva.id }}</td>
+                <td>
+                  <div class="user-info">
+                    <div class="user-avatar">{{ getInitials(reserva.usuario) }}</div>
+                    <strong>{{ reserva.usuario }}</strong>
+                  </div>
+                </td>
+                <td>
+                  <span class="disciplina-tag">{{ reserva.disciplina }}</span>
+                </td>
+                <td>{{ reserva.instalacion }}</td>
+                <td>{{ formatDate(reserva.fecha) }}</td>
+                <td>
+                  <span class="horario">{{ reserva.horaInicio }} - {{ reserva.horaFin }}</span>
+                </td>
+                <td>
+                  <span :class="['badge', `badge-${reserva.estado}`]">
+                    {{ getEstadoLabel(reserva.estado) }}
+                  </span>
+                </td>
+                <td class="actions-column">
+                  <div class="action-buttons">
+                    <button @click="verDetalle(reserva)" class="btn-action btn-view" title="Ver detalles">
+                      <i class="pi pi-info-circle" style="color: #F59E0B; font-size: 1.3rem;"></i>
+                    </button>
+                    <button v-if="reserva.estado === 'pendiente'" @click="confirmarReserva(reserva)"
+                      class="btn-action btn-confirm" title="Confirmar reserva">
+                      ✅
+                    </button>
+                    <button v-if="reserva.estado !== 'cancelada' && reserva.estado !== 'completada'"
+                      @click="cancelarReserva(reserva)" class="btn-action btn-cancel" title="Cancelar reserva">
+                      <i class="pi pi-calendar-times" style="color: red; font-size: 1.3rem;"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Estado vacío -->
+          <div v-else class="empty-state">
+            <span class="empty-icon">
+              <i class="pi pi-calendar-times" style="color: #6B7280; font-size: 5rem;"></i>
+            </span>
+            <h3>No se encontraron reservas</h3>
+            <p>
+              {{
+                filtros.busqueda || filtros.estado || filtros.disciplina
+                  ? 'Intenta ajustar los filtros'
+                  : 'Aún no hay reservas registradas'
+              }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </template>
 
     <!-- Modal de detalles -->
     <Transition name="modal">
@@ -153,7 +153,8 @@
           <div class="modal-header">
             <h3>
               <i class="pi pi-info-circle" style="color: #F59E0B; font-size: 1.4rem;"></i>
-              Detalles de Reserva #{{ reservaSeleccionada.id }}</h3>
+              Detalles de Reserva #{{ reservaSeleccionada.id }}
+            </h3>
             <button @click="cerrarModal" class="btn-close">✕</button>
           </div>
 
@@ -166,7 +167,7 @@
 
               <div class="detail-item">
                 <span class="detail-label">Email:</span>
-                <span class="detail-value">{{ reservaSeleccionada.email || 'usuario@ejemplo.com' }}</span>
+                <span class="detail-value">{{ reservaSeleccionada.email || 'No disponible' }}</span>
               </div>
 
               <div class="detail-item">
@@ -186,7 +187,9 @@
 
               <div class="detail-item">
                 <span class="detail-label">Horario:</span>
-                <span class="detail-value">{{ reservaSeleccionada.horaInicio }} - {{ reservaSeleccionada.horaFin }}</span>
+                <span class="detail-value">
+                  {{ reservaSeleccionada.horaInicio }} - {{ reservaSeleccionada.horaFin }}
+                </span>
               </div>
 
               <div class="detail-item">
@@ -203,20 +206,15 @@
             </div>
 
             <div v-if="reservaSeleccionada.notas" class="notes-section">
-              <h4> Notas:</h4>
+              <h4>Notas:</h4>
               <p>{{ reservaSeleccionada.notas }}</p>
             </div>
           </div>
 
           <div class="modal-footer">
-            <button @click="cerrarModal" class="btn-secondary">
-              Cerrar
-            </button>
-            <button
-              v-if="reservaSeleccionada.estado === 'pendiente'"
-              @click="confirmarReserva(reservaSeleccionada)"
-              class="btn-primary"
-            >
+            <button @click="cerrarModal" class="btn-secondary">Cerrar</button>
+            <button v-if="reservaSeleccionada.estado === 'pendiente'" @click="confirmarReserva(reservaSeleccionada)"
+              class="btn-primary">
               ✅ Confirmar Reserva
             </button>
           </div>
@@ -228,20 +226,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { obtenerTodasReservas } from '@/api/reserva/reservaApi';
+import { obtenerDisciplinas } from '@/api/disciplinas/disciplinasApi';
+import type { obtenerReservas } from '@/interfaces/reserva/reserva';
+import type { Disciplina } from '@/interfaces/disciplinas/disciplinas';
 
-// Interfaces
-interface Reserva {
-  id: number;
-  instalacionId: number;
-  usuarioId: number | null;
-  inicioTs: string;
-  finTs: string;
-  estado: string;
-  creadoEn: string;
-  actualizadoEn: string | null;
-}
-
-// Interface para la vista (datos transformados con JOINs del backend)
+// Interface para la vista
 interface ReservaView {
   id: number;
   usuario: string;
@@ -256,11 +246,6 @@ interface ReservaView {
   notas?: string;
 }
 
-interface Disciplina {
-  id: number;
-  nombre: string;
-}
-
 interface Filtros {
   busqueda: string;
   estado: string;
@@ -271,6 +256,8 @@ interface Filtros {
 // Estado reactivo
 const reservas = ref<ReservaView[]>([]);
 const disciplinas = ref<Disciplina[]>([]);
+const loading = ref(false);
+const error = ref(false);
 const mostrarModal = ref(false);
 const reservaSeleccionada = ref<ReservaView | null>(null);
 
@@ -284,7 +271,8 @@ const filtros = ref<Filtros>({
 // Computed
 const reservasFiltradas = computed(() => {
   return reservas.value.filter(r => {
-    const matchBusqueda = !filtros.value.busqueda ||
+    const matchBusqueda =
+      !filtros.value.busqueda ||
       r.usuario.toLowerCase().includes(filtros.value.busqueda.toLowerCase()) ||
       r.instalacion.toLowerCase().includes(filtros.value.busqueda.toLowerCase());
 
@@ -296,76 +284,146 @@ const reservasFiltradas = computed(() => {
   });
 });
 
-// Lifecycle
-onMounted(() => {
-  cargarReservas();
-  cargarDisciplinas();
+const disciplinasUnicas = computed(() => {
+  const disciplinasSet = new Set(reservas.value.map(r => r.disciplina));
+  return Array.from(disciplinasSet).sort();
 });
+
+// Lifecycle
+onMounted(async () => {
+  await Promise.all([cargarReservas(), cargarDisciplinas()]);
+});
+
+// Transformar datos
+const transformarReserva = (reserva: obtenerReservas): ReservaView => {
+  // normalize raw payload in a safe way (no 'any')
+  const raw = reserva as unknown as Record<string, unknown>;
+
+  const inicio = new Date(
+    typeof raw.inicioTs === 'string' || typeof raw.inicioTs === 'number'
+      ? (raw.inicioTs as string | number)
+      : Date.now()
+  );
+  const fin = new Date(
+    typeof raw.finTs === 'string' || typeof raw.finTs === 'number'
+      ? (raw.finTs as string | number)
+      : Date.now()
+  );
+
+  const usuarioNombre =
+    typeof raw.usuarioNombre === 'string' ? raw.usuarioNombre : undefined;
+  const usuarioId =
+    raw.usuarioId ??
+    (typeof raw.usuario === 'object' &&
+      raw.usuario !== null &&
+      'id' in (raw.usuario as Record<string, unknown>)
+      ? (raw.usuario as Record<string, unknown>).id
+      : undefined);
+  const usuario =
+    usuarioNombre ?? `Usuario #${(typeof usuarioId === 'number' || typeof usuarioId === 'string') ? usuarioId : 'N/A'}`;
+
+  const email =
+    typeof raw.usuarioEmail === 'string'
+      ? raw.usuarioEmail
+      : typeof raw.email === 'string'
+        ? raw.email
+        : undefined;
+
+  const disciplina =
+    typeof raw.disciplinaNombre === 'string'
+      ? raw.disciplinaNombre
+      : typeof raw.disciplina === 'string'
+        ? raw.disciplina
+        : 'Sin disciplina';
+
+  const instalacion =
+    typeof raw.instalacionNombre === 'string'
+      ? raw.instalacionNombre
+      : typeof raw.instalacion === 'string'
+        ? raw.instalacion
+        : `Instalación #${String(raw.instalacionId ?? '')}`;
+
+  // ensure string (split() indexing can produce undefined in TS)
+  const iso = inicio.toISOString();
+  const fecha = iso.split('T')[0] ?? '';
+
+  const horaInicio = inicio.toTimeString().substring(0, 5);
+  const horaFin = fin.toTimeString().substring(0, 5);
+
+  // pick a creation date from common keys and ensure string
+  const fechaCreacion =
+    (typeof raw.creadoEn === 'string' && raw.creadoEn) ||
+    (typeof raw.creado_en === 'string' && raw.creado_en) ||
+    (typeof raw.creadoAt === 'string' && raw.creadoAt) ||
+    '';
+
+  const notas = typeof raw.notas === 'string' ? raw.notas : undefined;
+
+  return {
+    id: reserva.id,
+    usuario,
+    email,
+    disciplina,
+    instalacion,
+    fecha,
+    horaInicio,
+    horaFin,
+    estado: mapearEstado(String(reserva.estado ?? 'pendiente')),
+    fechaCreacion,
+    notas
+  };
+};
+
+const mapearEstado = (
+  estado: string
+): 'activa' | 'pendiente' | 'confirmada' | 'completada' | 'cancelada' => {
+  const estadoLower = estado.toLowerCase();
+  const mapeo: Record<
+    string,
+    'activa' | 'pendiente' | 'confirmada' | 'completada' | 'cancelada'
+  > = {
+    activa: 'activa',
+    active: 'activa',
+    pendiente: 'pendiente',
+    pending: 'pendiente',
+    confirmada: 'confirmada',
+    confirmed: 'confirmada',
+    completada: 'completada',
+    completed: 'completada',
+    cancelada: 'cancelada',
+    cancelled: 'cancelada',
+    canceled: 'cancelada'
+  };
+  return mapeo[estadoLower] || 'pendiente';
+};
 
 // Métodos
 const cargarReservas = async () => {
-  try {
-    // TODO: Conectar con tu API Spring Boot
-    // const response = await fetch('/api/admin/reservas');
-    // const data: ReservaView[] = await response.json();
-    // reservas.value = data;
+  loading.value = true;
+  error.value = false;
 
-    // Mock data temporal
-    reservas.value = [
-      {
-        id: 22,
-        usuario: 'Usuario Ejemplo',
-        email: 'usuario@ejemplo.com',
-        disciplina: 'Disciplina 1',
-        instalacion: 'Instalación 1',
-        fecha: '2025-12-25',
-        horaInicio: '07:00',
-        horaFin: '08:00',
-        estado: 'activa',
-        fechaCreacion: '2025-11-11T15:15:29'
-      },
-      {
-        id: 2,
-        usuario: 'Usuario 5',
-        email: 'user5@ejemplo.com',
-        disciplina: 'Disciplina 2',
-        instalacion: 'Instalación 5',
-        fecha: '2025-11-04',
-        horaInicio: '08:00',
-        horaFin: '09:00',
-        estado: 'activa',
-        fechaCreacion: '2025-11-10T17:18:35'
-      },
-      {
-        id: 21,
-        usuario: 'Usuario 1',
-        email: 'user1@ejemplo.com',
-        disciplina: 'Disciplina 1',
-        instalacion: 'Instalación 1',
-        fecha: '2025-11-11',
-        horaInicio: '07:00',
-        horaFin: '08:00',
-        estado: 'activa',
-        fechaCreacion: '2025-11-11T15:14:03'
-      }
-    ];
-  } catch (error) {
-    console.error('Error cargando reservas:', error);
+  try {
+    const data = await obtenerTodasReservas();
+    reservas.value = data.map(transformarReserva);
+    console.log(`✅ ${reservas.value.length} reservas cargadas`);
+  } catch (err) {
+    console.error('Error cargando reservas:', err);
+    error.value = true;
+    reservas.value = [];
+  } finally {
+    loading.value = false;
   }
 };
 
 const cargarDisciplinas = async () => {
   try {
-    // TODO: Conectar con tu API Spring Boot
-    // const response = await fetch('/api/disciplinas');
-    // disciplinas.value = await response.json();
-
-    disciplinas.value = [
-      { id: 1, nombre: 'Disciplina 1' },
-      { id: 5, nombre: 'Disciplina 5' }
-    ];
-  } catch (error) {
-    console.error('Error cargando disciplinas:', error);
+    const data = await obtenerDisciplinas();
+    if (data) {
+      disciplinas.value = data;
+    }
+  } catch (err) {
+    console.error('Error cargando disciplinas:', err);
+    disciplinas.value = [];
   }
 };
 
@@ -376,10 +434,14 @@ const verDetalle = (reserva: ReservaView) => {
 
 const confirmarReserva = async (reserva: ReservaView) => {
   try {
-    // TODO: await fetch(`/api/admin/reservas/${reserva.id}/confirmar`, { method: 'PUT' });
+    // TODO: Implementar endpoint en backend
+    // await axios.put(`${import.meta.env.VITE_API}/reservas/${reserva.id}/confirmar`);
+
     reserva.estado = 'confirmada';
     console.log('Reserva confirmada:', reserva);
     cerrarModal();
+
+    alert('⚠️ Endpoint de confirmar pendiente en backend');
   } catch (error) {
     console.error('Error confirmando reserva:', error);
   }
@@ -389,16 +451,30 @@ const cancelarReserva = async (reserva: ReservaView) => {
   if (!confirm(`¿Cancelar la reserva de ${reserva.usuario}?`)) return;
 
   try {
-    // TODO: await fetch(`/api/admin/reservas/${reserva.id}/cancelar`, { method: 'PUT' });
+    // TODO: Implementar endpoint en backend
+    // await axios.put(`${import.meta.env.VITE_API}/reservas/${reserva.id}/cancelar`);
+
     reserva.estado = 'cancelada';
     console.log('Reserva cancelada:', reserva);
+
+    alert('⚠️ Endpoint de cancelar pendiente en backend');
   } catch (error) {
     console.error('Error cancelando reserva:', error);
   }
 };
 
 const exportarReservas = () => {
-  const headers = ['ID', 'Usuario', 'Email', 'Disciplina', 'Instalación', 'Fecha', 'Hora Inicio', 'Hora Fin', 'Estado'];
+  const headers = [
+    'ID',
+    'Usuario',
+    'Email',
+    'Disciplina',
+    'Instalación',
+    'Fecha',
+    'Hora Inicio',
+    'Hora Fin',
+    'Estado'
+  ];
   const rows = reservasFiltradas.value.map(r => [
     r.id,
     r.usuario,
@@ -465,21 +541,41 @@ const formatDateTime = (fecha: string): string => {
 
 const getEstadoLabel = (estado: string): string => {
   const labels: Record<string, string> = {
-    activa: ' Activa',
-    pendiente: ' Pendiente',
-    confirmada: ' Confirmada',
-    completada: ' Completada',
-    cancelada: ' Cancelada'
+    activa: 'Activa',
+    pendiente: 'Pendiente',
+    confirmada: 'Confirmada',
+    completada: 'Completada',
+    cancelada: 'Cancelada'
   };
   return labels[estado] || estado;
 };
 </script>
 
 <style scoped>
-
 .gestion-reservas {
   max-width: 1600px;
   margin: 0 auto;
+}
+
+/* Loading y Error States */
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+}
+
+.loading-state p,
+.error-state p {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.error-state .btn-primary {
+  margin-top: 1rem;
 }
 
 .page-header {

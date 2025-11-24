@@ -1,5 +1,6 @@
 import type { obtenerReservas } from '@/interfaces/reserva/reserva'
 import type { usuario } from '@/interfaces/usuarios/usuario'
+import { LanzarAlerta } from '@/utils/alertas'
 import axios from 'axios'
 
 const usuario: usuario = JSON.parse(localStorage.getItem('usuario') || '{}')
@@ -29,4 +30,15 @@ export const reservasApi = {
     const res = await axios.get(`${import.meta.env.VITE_API}/reservas/usuario/${usuarioId}/all`)
     return res.data
   },
+}
+
+export const obtenerTodasReservas = async (): Promise<obtenerReservas[]> => {
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_API}/reservas/all`)
+    return res.data
+  } catch (error) {
+    LanzarAlerta('No se pudieron obtener los reservas.', 'error')
+    console.error(error)
+  }
+  return []
 }

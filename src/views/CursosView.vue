@@ -1,7 +1,7 @@
 <template>
   <div class="cursos-container">
     <header class="cursos-header">
-      <h1>  Villa Olímpica </h1>
+      <h1> Villa Olímpica </h1>
       <h2>Programas Deportivos Disponibles</h2>
       <p>Elige entre los programas de formación deportiva disponibles</p>
     </header>
@@ -19,7 +19,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable vue/block-lang -->
 <script setup>
 import { ref, onMounted } from 'vue'
 import { obtenerCursos } from '@/services/cursoService'
