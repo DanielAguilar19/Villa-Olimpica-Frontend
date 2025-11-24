@@ -2,9 +2,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import rutasAuth from '@/router/autenticacion/autenticacionRoutes'
 import rutasUsuario from '@/router/usuarios/usuariosRoutes'
 import rutasDisciplinas from '@/router/disciplinas/disciplinasRoutes'
+import rutasAdmin from '@/router/admin/adminRoutes'
+//import adminRoutes from '@/router/admin/adminRoutes'
+
 import rutasDisponibilidad from '@/router/disponibilidad/disponibilidadRoutes'
 import rutasReserva from '@/router/reserva/reservaRoutes'
-import rutasAdminUser from '@/router/admin/adminUsuariosRoutes'
+//import rutasAdminUser from '@/router/admin/adminUsuariosRoutes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,9 +15,10 @@ const router = createRouter({
     ...rutasAuth,
     ...rutasUsuario,
     ...rutasDisciplinas,
+    ...rutasAdmin,
     ...rutasDisponibilidad,
     ...rutasReserva,
-    ...rutasAdminUser,
+    //...rutasAdminUser,
   ],
 })
 
