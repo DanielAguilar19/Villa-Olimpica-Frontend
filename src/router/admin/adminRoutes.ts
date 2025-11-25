@@ -1,7 +1,6 @@
 export default [
   {
     path: '/admin',
-    // @ts-expect-error: missing .vue declaration file
     component: () => import('@/components/Layouts/AdminLayout.vue'),
     meta: {
       requiresAuth: true,

@@ -1,4 +1,3 @@
-<!-- src/components/Layouts/AdminLayout.vue -->
 <template>
   <div class="admin-layout">
     <AdminSidebar />

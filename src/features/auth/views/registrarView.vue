@@ -98,6 +98,7 @@ async function onSubmit() {
 
     if (response) {
       await router.push({ name: 'login' })
+      LanzarAlerta('Se creó el user satisfactoriamente.', 'success')
     }
   } catch (error) {
     LanzarAlerta('Error al registrar el usuario. Valide los campos.', 'error')

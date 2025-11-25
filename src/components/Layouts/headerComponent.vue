@@ -17,8 +17,6 @@
 
       <!-- Acciones del header (derecha) -->
       <div class="header-actions">
-        <!-- Home -->
-        <Button label="Home" icon="pi pi-home" text @click="irA('home')" class="btn-home hidden md:inline-flex " />
 
         <!-- Perfil -->
         <Button label="Perfil" icon="pi pi-user" text class="btn-perfil" @click="irAlPerfil" />
@@ -43,7 +41,6 @@ import logoutButton from '@/components/UI/logoutButton.vue';
 const router = useRouter()
 const searchQuery = ref('')
 
-const irA = (routeName: string) => router.push({ name: routeName })
 const irAlPerfil = () => router.push({ name: 'perfil' })
 
 </script>

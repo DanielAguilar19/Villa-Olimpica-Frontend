@@ -80,7 +80,7 @@
           </div>
 
           <!-- Gestionar Reservas -->
-          <div class="glass-card cursor-pointer" @click="gestionarReservas">
+          <div class="glass-card cursor-pointer" @click="verTodasReservas">
             <div class="card-content">
               <div class="card-icon bg-green-500/20">
                 <i class="pi pi-calendar text-4xl text-green-400"></i>
@@ -92,85 +92,7 @@
           </div>
         </div>
 
-        <!-- Reservas Activas -->
-        <div class="mb-12">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-              <i class="pi pi-bookmark text-green-400"></i>
-              Reservas Activas
-            </h2>
-            <Button label="Ver todo" icon="pi pi-arrow-right" text class="text-blue-400" @click="verTodasReservas" />
-          </div>
 
-          <!--div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div
-            v-for="reserva in reservasActivas"
-            :key="reserva.id"
-            class="glass-card-small"
-          >
-            <div class="flex items-start gap-4">
-              <div class="reserva-icon">
-                <i class="pi pi-calendar text-2xl text-blue-400"></i>
-              </div>
-              <div class="flex-1">
-                <h3 class="font-bold text-lg text-white mb-1">{{ reserva.titulo }}</h3>
-                <p class="text-gray-400 text-sm mb-2">
-                  {{ reserva.fecha }} • {{ reserva.hora }} • {{ reserva.instructor }}
-                </p>
-                <Tag
-                  :value="reserva.estado"
-                  :severity="getEstadoSeverity(reserva.estado)"
-                  :style="getEstadoStyle(reserva.estado)"
-                />
-              </div>
-            </div>
-          </div>
-        </div-->
-        </div>
-
-        <!-- Cursos Activos -->
-        <div>
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-              <i class="pi pi-play-circle text-purple-400"></i>
-              Tus Cursos Activos
-            </h2>
-            <Button label="Continuar" icon="pi pi-arrow-right" text class="text-purple-400" @click="continuarCursos" />
-          </div>
-
-          <!--div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            v-for="curso in cursosActivos"
-            :key="curso.id"
-            class="glass-card-small"
-          >
-            <div class="flex items-start gap-4">
-              <div class="curso-icon">
-                <i class="pi pi-book text-2xl text-purple-400"></i>
-              </div>
-              <div class="flex-1">
-                <h3 class="font-bold text-lg text-white mb-1">{{ curso.titulo }}</h3>
-                <p class="text-gray-400 text-sm mb-3">
-                  {{ curso.modulo }} • {{ curso.tiempo }}
-                </p>
-                <ProgressBar
-                  :value="curso.progreso"
-                  :show-value="false"
-                  class="custom-progress"
-                />
-                <div class="flex items-center justify-between mt-3">
-                  <Tag
-                    :value="curso.estado"
-                    severity="success"
-                    style="background-color: rgba(34, 197, 94, 0.2); color: #4ade80;"
-                  />
-                  <span class="text-sm text-gray-400">{{ curso.progreso }}%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div-->
-        </div>
       </div>
     </div>
   </body>
@@ -188,14 +110,8 @@ const router = useRouter()
 
 //const searchQuery = ref('')
 
-const usuarioGuardado = localStorage.getItem('usuario')
-const nombreUsuario = ref('Usuario')
 
-if (usuarioGuardado) {
-  const usuario = JSON.parse(usuarioGuardado)
-  nombreUsuario.value = usuario.nombre
-  nombreUsuario.value = usuario.nombre
-}
+const nombreUsuario = localStorage.getItem('username')
 
 // Imágenes del carrusel
 const imagenesHero = ref([
@@ -274,7 +190,6 @@ onUnmounted(() => {
 // Métodos
 const verDisciplinas = () => router.push({ name: 'disciplinas' })
 const explorarCursos = () => router.push({ name: 'mis-cursos' })
-const gestionarReservas = () => router.push({ name: 'reservas' })
 const verTodasReservas = () => {
   const id = localStorage.getItem('id');
   if (!id) {
@@ -284,7 +199,6 @@ const verTodasReservas = () => {
 
   router.push({ name: 'ReservasUsuario', params: { usuarioId: id } });
 };
-const continuarCursos = () => router.push({ name: 'mis-cursos' })
 //const irA = (routeName: string) => router.push({ name: routeName })
 //const irAlPerfil = () => router.push({ name: 'perfil' })
 
@@ -436,6 +350,7 @@ const getEstadoStyle = (estado: string) => {
 .hero-section {
   height: 600px;
   position: relative;
+
 }
 
 .hero-image img {

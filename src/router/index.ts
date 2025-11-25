@@ -8,6 +8,7 @@ import rutasAdmin from '@/router/admin/adminRoutes'
 
 import rutasDisponibilidad from '@/router/disponibilidad/disponibilidadRoutes'
 import rutasReserva from '@/router/reserva/reservaRoutes'
+import { LanzarAlerta } from '@/utils/alertas'
 //import rutasAdminUser from '@/router/admin/adminUsuariosRoutes'
 
 const router = createRouter({
@@ -32,9 +33,8 @@ router.beforeEach((to, from, next) => {
     isAuthenticated = true
   }
 
-  if (to.meta.requiresAuthExt && rol === 'EXTERNO' && !isAuthenticated) {
-    // Si la ruta requiere auth y NO está autenticado, va al login
-    next({ name: 'login' })
+  if (to.meta.requiresAuthExt && rol === 'EXTERNO') {
+    LanzarAlerta('No tienes permiso para acceder a esta sección.', 'warning')
   } else if ((to.name === 'login' || to.name === 'registrar') && isAuthenticated) {
     next({ name: 'home' })
   } else {

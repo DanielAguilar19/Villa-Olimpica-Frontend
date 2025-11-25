@@ -70,7 +70,7 @@
 
         <template #footer>
           <div class="card-footer">
-            <Button label="Ir a Reservas" icon="pi pi-arrow-right" @click="goTo('/admin/crear-usuarios')" />
+            <Button label="Ir a el formulario" icon="pi pi-arrow-right" @click="goTo('/admin/crear-usuarios')" />
           </div>
         </template>
       </Card>
