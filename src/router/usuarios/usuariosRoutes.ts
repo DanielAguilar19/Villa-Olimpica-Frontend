@@ -19,14 +19,12 @@ export default [
     path: '/mis-cursos',
     name: 'mis-cursos',
     component: () => import('@/views/MisCursosView.vue'),
-    meta: { requiresAuth: false }, // ← Cambiar a false temporalmente
   },
 
   {
     path: '/mis-cursos-instructor',
     name: 'mis-cursos-instructor',
     component: () => import('@/views/MisCursosInstructorView.vue'),
-    meta: { requiresAuth: true },
   },
   // Rutas protegidas
   // RUTAS PRIVADAS (requieren autenticación)
@@ -34,7 +32,6 @@ export default [
     path: '/home',
     name: 'home',
     component: () => import('@/views/userHomePageView.vue'),
-    meta: { requiresAuth: true },
   },
   /*
     {
