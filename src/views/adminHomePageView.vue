@@ -8,6 +8,7 @@
     </div>
 
     <div class="cards-grid">
+      <!-- Card Reservas -->
       <Card class="home-card card-like">
         <template #title>
           <div class="card-title">
@@ -30,6 +31,7 @@
         </template>
       </Card>
 
+      <!-- Card Disciplinas -->
       <Card class="home-card card-like">
         <template #title>
           <div class="card-title">
@@ -53,24 +55,58 @@
         </template>
       </Card>
 
+      <!-- Card Instalaciones -->
+      <Card class="home-card card-like">
+        <template #title>
+          <div class="card-title">
+            <Avatar 
+              class="card-avatar" 
+              label="I" 
+              shape="circle" 
+              size="large"
+              style="background: linear-gradient(135deg,#8b5cf6,#a78bfa)" 
+            />
+            <div class="card-meta">
+              <h3>Instalaciones</h3>
+              <p>Gestiona las instalaciones deportivas de la villa.</p>
+            </div>
+          </div>
+        </template>
+
+        <div class="card-body">
+          <p>Crear, editar y administrar el estado de las instalaciones. Asignar disciplinas y ubicaciones.</p>
+        </div>
+
+        <template #footer>
+          <div class="card-footer">
+            <Button 
+              label="Ir a Instalaciones" 
+              icon="pi pi-arrow-right" 
+              @click="goTo('/admin/instalaciones')" 
+            />
+          </div>
+        </template>
+      </Card>
+
+      <!-- Card Crear Usuarios -->
       <Card class="home-card card-like">
         <template #title>
           <div class="card-title">
             <Avatar class="card-avatar" label="CU" shape="circle" size="large" />
             <div class="card-meta">
-              <h3>Crear usuarios</h3>
+              <h3>Crear Usuarios</h3>
               <p>Formulario para crear todo tipo de usuarios.</p>
             </div>
           </div>
         </template>
 
         <div class="card-body">
-          <p>Ver, editar, filtrar y confirmar reservas. Accede a los detalles por usuario o cancha.</p>
+          <p>Registra nuevos usuarios en el sistema. Asigna roles y permisos de acceso.</p>
         </div>
 
         <template #footer>
           <div class="card-footer">
-            <Button label="Ir a el formulario" icon="pi pi-arrow-right" @click="goTo('/admin/crear-usuarios')" />
+            <Button label="Ir al Formulario" icon="pi pi-arrow-right" @click="goTo('/admin/crear-usuarios')" />
           </div>
         </template>
       </Card>
@@ -90,9 +126,6 @@ const userName = localStorage.getItem('username') || 'Administrador';
 function goTo(path: string) {
   router.push(path);
 }
-
-
-
 </script>
 
 <style scoped>
@@ -104,14 +137,13 @@ function goTo(path: string) {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
-  /* ya el layout agrega padding vertical */
 }
 
 .text-black {
   color: black !important;
 }
 
-/* Card-like container para header y cards (coincidir con AdminLayout) */
+/* Card-like container para header y cards */
 .card-like {
   background: white !important;
   color: #0f172a !important;
@@ -191,11 +223,10 @@ function goTo(path: string) {
   align-items: center;
 }
 
-/* Forzar colores de botones si tema oscuro aplica estilos globales */
+/* Forzar colores de botones */
 .home-card .p-button,
 .card-like .p-button {
   background-color: #10b981 !important;
-  /* verde similar al que usas */
   border-color: transparent !important;
   color: white !important;
   box-shadow: none !important;
@@ -206,7 +237,7 @@ function goTo(path: string) {
   color: #0f172a !important;
 }
 
-/* make sure Card header/title areas inherit dark->light override */
+/* Make sure Card header/title areas inherit colors */
 .home-card .p-card-title,
 .home-card .p-card-subtitle,
 .home-card .p-card-content {
