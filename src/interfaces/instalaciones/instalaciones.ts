@@ -6,3 +6,11 @@ export interface Instalacion {
   disciplinaId: number
   disciplinaNombre: string
 }
+
+export interface CrearInstalacionDTO {
+  nombre: string
+  ubicacion: string
+  disciplinaId: number
+  estado?: 'ACTIVO' | 'INACTIVO'
+}
+
