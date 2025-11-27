@@ -58,9 +58,6 @@
                     <i class="pi pi-pen-to-square" style="color: gray; font-size: 1.1rem;"></i>
                   </button>
 
-                  <button @click="confirmarEliminar(u)" class="btn-action btn-delete" title="Eliminar usuario">
-                    <i class="pi pi-trash" style="color: red; font-size: 1.1rem;"></i>
-                  </button>
                 </div>
               </td>
             </tr>
@@ -133,8 +130,6 @@
               <select v-model="form.estado" class="form-input">
                 <option value="ACTIVO">ACTIVO</option>
                 <option value="INACTIVO">INACTIVO</option>
-                <option value="SUSPENDIDO">SUSPENDIDO</option>
-                <option value="ELIMINADO">ELIMINADO</option>
               </select>
             </div>
 
@@ -257,10 +252,6 @@ const abrirEditar = (u: UsuarioView) => {
   mostrarModal.value = true;
 };
 
-const confirmarEliminar = (u: UsuarioView) => {
-  usuarioAEliminar.value = u;
-  mostrarConfirmacion.value = true;
-};
 
 const eliminar = async () => {
   if (!usuarioAEliminar.value) return;

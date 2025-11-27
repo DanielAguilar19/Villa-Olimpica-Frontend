@@ -88,8 +88,7 @@ async function onSubmit() {
       password: form.password,
     }) as loginResponse | null
 
-    if (response) {
-      // normalizamos tipoUsuario por si viene con espacios o minúsculas
+    if (response && (response.estado as string) === 'ACTIVO') {
       const rawTipo = (response.tipoUsuario ?? '').toString().trim().toUpperCase()
 
       localStorage.setItem('id', String(response.id))
@@ -101,6 +100,8 @@ async function onSubmit() {
       const targetRouteName = ROLE_ROUTE_MAP[rawTipo] ?? 'home'
 
       await router.push({ name: targetRouteName })
+    } else {
+      LanzarAlerta('Usuario inactivo. Contacte al administrador.', 'warning')
     }
   } catch (error) {
     LanzarAlerta('Error al iniciar sesión. Verifique sus credenciales.', 'error')
