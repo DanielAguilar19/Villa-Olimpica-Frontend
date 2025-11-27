@@ -109,8 +109,9 @@ import { useToast } from 'primevue/usetoast'
  * Si la ruta es distinta ajústala.
  */
 import type { CrearSesion } from '@/interfaces/sesiones/ISesion'
-import { getAllCursos, getAllInstalaciones, crearSesion } from '@/api/sesiones/sesionesApi'
+import { getAllInstalaciones, crearSesion } from '@/api/sesiones/sesionesApi'
 import type { Instalacion } from '@/interfaces/instalaciones/instalaciones'
+import { obtenerCursos } from '@/services/cursoService'
 
 const toast = useToast()
 const cursos = ref<{ id: number; nombre: string; estado?: string }[]>([])
@@ -146,7 +147,7 @@ onMounted(() => {
 async function loadCursos() {
   loadingCursos.value = true
   try {
-    const res = await getAllCursos()
+    const res = await obtenerCursos()
     if (!res || res.length === 0) {
       toast.add({ severity: 'warn', summary: 'Sin cursos', detail: 'No hay cursos disponibles' })
       cursos.value = []

@@ -53,7 +53,8 @@
       </div>
 
       <transition-group name="list" tag="div" class="cards-grid" v-else>
-        <ReservaCard v-for="r in filtered" :key="r.id" :reserva="r" @ver="onVer" @cancel="onCancel" class="card-item" />
+        <ReservaCard v-for="r in filtered" :key="r.id" :reserva="r" @cancel="cambiarEstado(r, r.estado)"
+          class="card-item" />
       </transition-group>
     </div>
   </div>
@@ -157,41 +158,14 @@ const filtered = computed(() => {
 // handlers
 function setRango(v: 'all' | 'past' | 'future') { filtroRango.value = v; }
 
-function onVer(reserva: obtenerReservas) {
-  router.push({ name: 'ReservaDetalle', params: { id: String(reserva.id) } });
-}
-
-// Aquí: lógica para cancelar (o cambiar de estado)
-// usa cambiarEstadoReserva(reservaId, estado) y actualiza items localmente
-async function onCancel(reserva: obtenerReservas) {
-  if (!confirm(`¿Cancelar reserva ${reserva.id}?`)) return;
-  const id = Number(reserva.id);
-  pendingIds.value[id] = true;
-
-  try {
-    // Llamada PATCH al backend
-    await cambiarEstadoReserva(id, 'cancelada');
-
-    // actualizar en memoria sin volver a cargar todo
-    const idx = items.value.findIndex(r => Number(r.id) === id);
-    if (idx !== -1) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (items.value[idx] as any).estado = 'cancelada';
-      lanzarAlertaSafe('Reserva cancelada', 'success');
-    } else {
-      await load();
-    }
-  } catch (err) {
-    console.error('Error cancelando reserva', err);
-    lanzarAlertaSafe('Error cancelando la reserva', 'error');
-  } finally {
-    delete pendingIds.value[id];
-  }
-}
-
 // función para cambiar estado genérico (útil para confirmar u otros cambios)
 async function cambiarEstado(reserva: obtenerReservas, nuevoEstado: string) {
   const id = Number(reserva.id);
+  if (nuevoEstado === "ACTIVO") {
+    nuevoEstado = "CANCELADA"
+  } else {
+    nuevoEstado = "ACTIVA"
+  }
   if (!confirm(`¿Cambiar estado de la reserva #${id} a "${nuevoEstado}"?`)) return;
   pendingIds.value[id] = true;
   try {
