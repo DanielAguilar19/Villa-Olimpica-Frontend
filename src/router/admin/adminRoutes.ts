@@ -32,6 +32,11 @@ export default [
         name: 'CrearUsuarios',
         component: () => import('@/features/admin/views/CrearUsuarioView.vue'),
       },
+      {
+        path: 'usuarios',
+        name: 'gestionUsuarios',
+        component: () => import('@/features/admin/views/GestionUsuariosView.vue'),
+      },
     ],
   },
 ]

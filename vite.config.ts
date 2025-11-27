@@ -8,12 +8,11 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   plugins: [
     vue(),
-    //vueDevTools(),//desactivar termporalmente
-
+    vueDevTools(), //desactivar termporalmente
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
 
@@ -28,5 +27,5 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-  }
-});
+  },
+})

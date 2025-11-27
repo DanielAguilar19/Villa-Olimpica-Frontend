@@ -26,11 +26,11 @@
           <span class="text">Disciplinas</span>
         </router-link>
 
-        <router-link to="/admin/crear-usuarios" class="nav-item">
+        <router-link to="/admin/usuarios" class="nav-item">
           <span class="icon">
             <i class="pi pi-user"></i>
           </span>
-          <span class="text">Crear usuarios</span>
+          <span class="text">usuarios</span>
         </router-link>
       </div>
     </nav>

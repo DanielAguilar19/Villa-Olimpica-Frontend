@@ -98,7 +98,7 @@ import { useToast } from 'primevue/usetoast'
 import type { TipoUsuario } from '@/interfaces/tiposUsuario/tipoUsuario'
 import type { crearUsuario } from '@/interfaces/usuarios/usuario'
 import { getTiposUsuario } from '@/api/tiposUsuario/tipoUsuarioApi'
-import { crearUsuarioFinal } from '@/api/usuarios/usuariosApi'
+import { registrarUsuario } from '@/api/usuarios/usuariosApi'
 
 const toast = useToast()
 
@@ -190,7 +190,7 @@ async function submit() {
       telefono: form.telefono?.trim() ?? ''
     }
 
-    const resp = await crearUsuarioFinal(payload)
+    const resp = await registrarUsuario(payload)
     toast.add({ severity: 'success', summary: 'Creado', detail: 'Usuario creado correctamente' })
     resetForm()
     console.log('Usuario creado:', resp)

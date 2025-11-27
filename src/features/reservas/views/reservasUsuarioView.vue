@@ -131,16 +131,6 @@ const userNameDisplay = computed(() => userName.value ?? 'Usuario');
 </script>
 
 <style scoped>
-:root {
-  --primary-500: #0b5cff;
-  --primary-700: #063a9a;
-  --bg-panel: rgba(3, 37, 65, 0.6);
-  --panel-border: rgba(11, 92, 255, 0.07);
-  --text-main: #e6f0ff;
-  --muted: #93a7c9;
-  --accent: #7dd3fc;
-}
-
 /* Page container */
 .page-container {
   max-width: 1200px;
