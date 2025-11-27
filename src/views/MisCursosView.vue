@@ -8,8 +8,13 @@
           <span class="text-xl font-bold text-white ml-2">Villa Olímpica</span>
         </div>
         <div class="header-actions">
-          <Button label="Volver" icon="pi pi-arrow-left" text @click="$router.push({ name: 'home' })"
-            class="btn-home" />
+          <Button
+            label="Volver"
+            icon="pi pi-arrow-left"
+            text
+            @click="$router.push({ name: 'home' })"
+            class="btn-home"
+          />
         </div>
       </div>
     </header>
@@ -27,21 +32,27 @@
       <!-- Tabs: Activos / Todos -->
       <div class="mb-8">
         <div class="flex gap-4 border-b border-gray-700">
-          <button @click="mostrarTodos = false" :class="[
-            'px-6 py-3 font-semibold transition-all',
-            !mostrarTodos
-              ? 'text-blue-400 border-b-2 border-blue-400'
-              : 'text-gray-400 hover:text-white',
-          ]">
+          <button
+            @click="mostrarTodos = false"
+            :class="[
+              'px-6 py-3 font-semibold transition-all',
+              !mostrarTodos
+                ? 'text-blue-400 border-b-2 border-blue-400'
+                : 'text-gray-400 hover:text-white',
+            ]"
+          >
             <i class="pi pi-check-circle mr-2"></i>
             Activos ({{ cursosActivos.length }})
           </button>
-          <button @click="mostrarTodos = true" :class="[
-            'px-6 py-3 font-semibold transition-all',
-            mostrarTodos
-              ? 'text-blue-400 border-b-2 border-blue-400'
-              : 'text-gray-400 hover:text-white',
-          ]">
+          <button
+            @click="mostrarTodos = true"
+            :class="[
+              'px-6 py-3 font-semibold transition-all',
+              mostrarTodos
+                ? 'text-blue-400 border-b-2 border-blue-400'
+                : 'text-gray-400 hover:text-white',
+            ]"
+          >
             <i class="pi pi-list mr-2"></i>
             Todos ({{ todosCursos.length }})
           </button>
@@ -55,7 +66,10 @@
       </div>
 
       <!-- Sin cursos -->
-      <div v-else-if="cursosAMostrar.length === 0" class="text-center py-12 glass-card">
+      <div
+        v-else-if="cursosAMostrar.length === 0"
+        class="text-center py-12 glass-card"
+      >
         <i class="pi pi-inbox text-6xl text-gray-600 mb-4"></i>
         <h3 class="text-xl font-bold text-white mb-2">No tienes cursos</h3>
         <p class="text-gray-400 mb-6">
@@ -65,18 +79,29 @@
               : 'No tienes cursos activos en este momento'
           }}
         </p>
-        <Button label="Explorar Cursos" icon="pi pi-search" @click="$router.push({ name: 'cursos' })"
-          class="p-button-primary" />
+        <Button
+          label="Explorar Cursos"
+          icon="pi pi-search"
+          @click="$router.push({ name: 'cursos' })"
+          class="p-button-primary"
+        />
       </div>
 
       <!-- Grid de Cursos -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div v-for="curso in cursosAMostrar" :key="curso.id" class="glass-card cursor-pointer hover-lift">
+        <div
+          v-for="curso in cursosAMostrar"
+          :key="curso.id"
+          class="glass-card cursor-pointer hover-lift"
+        >
           <div class="flex items-start justify-between mb-4">
             <div class="curso-icon">
               <i class="pi pi-book text-2xl text-purple-400"></i>
             </div>
-            <Tag :value="getEstadoLabel(curso.estado)" :severity="getEstadoSeverity(curso.estado)" />
+            <Tag
+              :value="getEstadoLabel(curso.estado)"
+              :severity="getEstadoSeverity(curso.estado)"
+            />
           </div>
 
           <h3 class="text-xl font-bold text-white mb-2">{{ curso.titulo }}</h3>
@@ -91,11 +116,20 @@
 
           <!-- Acciones -->
           <div class="flex gap-2 mt-4">
-            <Button label="Ver Detalles" icon="pi pi-eye" class="p-button-sm flex-1"
-              @click="verDetalleCurso(curso.id)" />
-            <Button v-if="curso.estado === 'ACTIVO'" icon="pi pi-times"
-              class="p-button-sm p-button-danger p-button-outlined" @click="confirmarCancelar(curso.id)"
-              v-tooltip.top="'Cancelar inscripción'" />
+            <Button
+              label="Ver Detalles"
+              icon="pi pi-eye"
+              class="p-button-sm flex-1"
+              @click="verDetalleCurso(curso.id)"
+            />
+            <Button
+              v-if="curso.estado === 'ACTIVO'"
+              icon="pi pi-times"
+              class="p-button-sm p-button-danger p-button-outlined"
+              @click="confirmarCancelar(curso.id)"
+              v-tooltip.top="'Cancelar inscripción'"
+            />
+
           </div>
         </div>
       </div>
@@ -110,6 +144,9 @@ import { useConfirm } from 'primevue/useconfirm';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import ProgressSpinner from 'primevue/progressspinner';
+import { getInscripcionesByUsuario } from '@/api/cursoCard/inscripciones.api';
+//import type { CursoInscripcionDTO } from '@/api/cursoCard/inscripciones.api';
+
 
 // ✅ IMPORTAR DESDE LA API
 import type { CursoCardDTO } from '@/api/cursoCard/inscripciones.api';
@@ -128,19 +165,22 @@ const confirm = useConfirm();
 // ============================================
 const loading = ref(false);
 const mostrarTodos = ref(false);
-const cursosActivos = ref<CursoCardDTO[]>([]);
-const todosCursos = ref<CursoCardDTO[]>([]);
+//const cursosActivos = ref<CursoCardDTO[]>([]);
+//const todosCursos = ref<CursoCardDTO[]>([]);
+const cursosActivos = ref<(CursoCardDTO & { inscripcionId: number })[]>([]);
+const todosCursos = ref<(CursoCardDTO & { inscripcionId: number })[]>([]);
+
 
 // Usuario actual (desde localStorage)
-const usuarioGuardado = localStorage.getItem('username');
-const usuarioId = Number(localStorage.getItem('id'));
+const usuarioGuardado = localStorage.getItem('usuario');
+const usuarioId = usuarioGuardado ? JSON.parse(usuarioGuardado).id : null;
 
 // En MisCursosView.vue
 
-console.log('👤 Usuario completo:', usuarioGuardado);
+console.log('Usuario completo:', usuarioGuardado);
 
 
-console.log('🆔 Usuario ID que se enviará:', usuarioId);
+console.log('Usuario ID que se enviará:', usuarioId);
 
 // ============================================
 // COMPUTED
@@ -153,7 +193,8 @@ const cursosAMostrar = computed(() => {
 // MÉTODOS
 // ============================================
 const cargarCursos = async () => {
-  if (!usuarioId) {
+  const usuarioIdStr = localStorage.getItem('id'); // obtener id del usuario
+  if (!usuarioIdStr) {
     toast.add({
       severity: 'error',
       summary: 'Error',
@@ -163,16 +204,28 @@ const cargarCursos = async () => {
     return;
   }
 
+  const usuarioId = Number(usuarioIdStr); // convertir a número
+
   loading.value = true;
   try {
-    const [activos, todos] = await Promise.all([
+    // Traer cursos y también inscripciones
+    const [activos, todos, inscripciones] = await Promise.all([
       getCursosActivosByUsuario(usuarioId),
       getAllCursosByUsuario(usuarioId),
+      getInscripcionesByUsuario(usuarioId),
     ]);
-    console.log('✅ Datos recibidos - Activos:', JSON.stringify(activos, null, 2));
-    console.log('✅ Datos recibidos - Todos:', JSON.stringify(todos, null, 2));
-    cursosActivos.value = activos;
-    todosCursos.value = todos;
+
+    // Mapear inscripcionId a cada curso
+    cursosActivos.value = activos.map(curso => {
+      const inscripcion = inscripciones.find(i => i.cursoId === curso.id);
+      return { ...curso, inscripcionId: inscripcion?.inscripcionId ?? 0 };
+    });
+
+    todosCursos.value = todos.map(curso => {
+      const inscripcion = inscripciones.find(i => i.cursoId === curso.id);
+      return { ...curso, inscripcionId: inscripcion?.inscripcionId ?? 0 };
+    });
+
   } catch (error) {
     console.error('Error cargando cursos:', error);
     toast.add({
@@ -185,6 +238,8 @@ const cargarCursos = async () => {
     loading.value = false;
   }
 };
+
+
 
 const confirmarCancelar = (cursoId: number) => {
   confirm.require({
@@ -201,21 +256,30 @@ const confirmarCancelar = (cursoId: number) => {
 };
 
 const cancelarInscripcionCurso = async (cursoId: number) => {
-  try {
+  const usuarioIdStr = localStorage.getItem('id'); // obtener id del usuario
+  if (!usuarioIdStr) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'No se pudo obtener el usuario',
+      life: 3000,
+    });
+    return;
+  }
 
-    const inscripcionId = 1;
-    console.log(cursoId)
-    await cancelarInscripcion(inscripcionId);
+  const usuarioId = Number(usuarioIdStr); // convertir a número
+
+  try {
+    const data = await cancelarInscripcion(usuarioId, cursoId);
 
     toast.add({
       severity: 'success',
       summary: 'Inscripción cancelada',
-      detail: 'Tu inscripción ha sido cancelada exitosamente',
+      detail: data.mensaje || 'Tu inscripción ha sido cancelada exitosamente',
       life: 3000,
     });
 
-    // Recargar cursos
-    await cargarCursos();
+    await cargarCursos(); // recargar los cursos para actualizar el estado
   } catch (error) {
     console.error('Error cancelando inscripción:', error);
     toast.add({
@@ -226,6 +290,8 @@ const cancelarInscripcionCurso = async (cursoId: number) => {
     });
   }
 };
+
+
 
 const verDetalleCurso = (cursoId: number) => {
   router.push({ name: 'detalle-curso', params: { id: cursoId } });

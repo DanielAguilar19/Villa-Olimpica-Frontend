@@ -88,6 +88,8 @@ const mapCursoFromBackend = (backendCurso: CursoCardBackendDTO): CursoCardDTO =>
 // FUNCIONES API
 // ============================================
 const BASE_URL = '/api/inscripciones';
+const API_URL = "http://localhost:8080/api/cursos";
+
 
 export const inscribirUsuario = async (
   request: InscripcionRequest
@@ -96,14 +98,6 @@ export const inscribirUsuario = async (
   return response.data;
 };
 
-export const cancelarInscripcion = async (
-  inscripcionId: number
-): Promise<CursoInscripcion> => {
-  const response = await api.put<CursoInscripcion>(
-    `${BASE_URL}/${inscripcionId}/cancelar`
-  );
-  return response.data;
-};
 
 export const getCursosActivosByUsuario = async (
   usuarioId: number
@@ -132,6 +126,11 @@ export const getInscripcionesByUsuario = async (
   return response.data;
 };
 
+export const obtenerCursos = async (): Promise<CursoCardDTO[]> => {
+  const respuesta = await axios.get<CursoCardBackendDTO[]>(`${API_URL}/todos`);
+  return respuesta.data.map(mapCursoFromBackend);
+};
+
 export const verificarInscripcion = async (
   cursoId: number,
   usuarioId: number
@@ -152,12 +151,14 @@ export const contarInscritosActivos = async (
   return response.data.inscritosActivos;
 };
 
-export const eliminarInscripcion = async (
-  inscripcionId: number
-): Promise<MensajeResponse> => {
-  const response = await api.delete<MensajeResponse>(
-    `${BASE_URL}/${inscripcionId}`
-  );
+export const cancelarInscripcion = async (
+  usuarioId: number,
+  cursoId: number
+): Promise<{ mensaje: string }> => {
+  const response = await api.put<{ mensaje: string }>(`${BASE_URL}/cancelarcurso`, {
+    usuarioId,
+    cursoId
+  });
   return response.data;
 };
 

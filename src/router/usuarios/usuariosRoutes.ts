@@ -33,6 +33,13 @@ export default [
     name: 'home',
     component: () => import('@/views/userHomePageView.vue'),
   },
+
+  {
+      path: '/cursos',
+      name: 'cursos',
+      component: () => import('@/views/TodoslosCursosView.vue'),
+      meta: { requiresAuth: true },
+    },
   /*
     {
       path: '/disciplinas',
