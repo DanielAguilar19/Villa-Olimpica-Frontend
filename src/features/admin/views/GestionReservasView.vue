@@ -1,4 +1,3 @@
-<!-- src/features/admin/views/GestionReservasView.vue -->
 <template>
   <div class="gestion-reservas">
     <!-- Header -->
@@ -114,13 +113,21 @@
                     <button @click="verDetalle(reserva)" class="btn-action btn-view" title="Ver detalles">
                       <i class="pi pi-info-circle" style="color: #F59E0B; font-size: 1.3rem;"></i>
                     </button>
+
+                    <!-- Confirmar (solo pendiente) -->
                     <button v-if="reserva.estado === 'pendiente'" @click="confirmarReserva(reserva)"
-                      class="btn-action btn-confirm" title="Confirmar reserva">
-                      ✅
+                      class="btn-action btn-confirm" title="Confirmar reserva" :disabled="isProcessing(reserva.id)">
+                      <span v-if="!isProcessing(reserva.id)">✅</span>
+                      <i v-else class="pi pi-spin pi-spinner"></i>
                     </button>
+
+                    <!-- Cancelar (si no está cancelada o completada) -->
                     <button v-if="reserva.estado !== 'cancelada' && reserva.estado !== 'completada'"
-                      @click="cancelarReserva(reserva)" class="btn-action btn-cancel" title="Cancelar reserva">
-                      <i class="pi pi-calendar-times" style="color: red; font-size: 1.3rem;"></i>
+                      @click="cancelarReserva(reserva)" class="btn-action btn-cancel" title="Cancelar reserva"
+                      :disabled="isProcessing(reserva.id)">
+                      <i v-if="!isProcessing(reserva.id)" class="pi pi-calendar-times"
+                        style="color: red; font-size: 1.3rem;"></i>
+                      <i v-else class="pi pi-spin pi-spinner"></i>
                     </button>
                   </div>
                 </td>
@@ -135,6 +142,7 @@
             </span>
             <h3>No se encontraron reservas</h3>
             <p>
+              {{ " " }}
               {{
                 filtros.busqueda || filtros.estado || filtros.disciplina
                   ? 'Intenta ajustar los filtros'
@@ -214,8 +222,9 @@
           <div class="modal-footer">
             <button @click="cerrarModal" class="btn-secondary">Cerrar</button>
             <button v-if="reservaSeleccionada.estado === 'pendiente'" @click="confirmarReserva(reservaSeleccionada)"
-              class="btn-primary">
-              ✅ Confirmar Reserva
+              class="btn-primary" :disabled="isProcessing(reservaSeleccionada.id)">
+              <span v-if="!isProcessing(reservaSeleccionada.id)">✅ Confirmar Reserva</span>
+              <i v-else class="pi pi-spin pi-spinner"></i>
             </button>
           </div>
         </div>
@@ -226,10 +235,11 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { obtenerTodasReservas } from '@/api/reserva/reservaApi';
+import { obtenerTodasReservas, cambiarEstadoReserva } from '@/api/reserva/reservaApi';
 import { obtenerDisciplinas } from '@/api/disciplinas/disciplinasApi';
 import type { obtenerReservas } from '@/interfaces/reserva/reserva';
 import type { Disciplina } from '@/interfaces/disciplinas/disciplinas';
+import { LanzarAlerta } from '@/utils/alertas';
 
 // Interface para la vista
 interface ReservaView {
@@ -260,6 +270,9 @@ const loading = ref(false);
 const error = ref(false);
 const mostrarModal = ref(false);
 const reservaSeleccionada = ref<ReservaView | null>(null);
+
+// control de procesos para evitar doble click
+const processingIds = ref<Set<number>>(new Set());
 
 const filtros = ref<Filtros>({
   busqueda: '',
@@ -294,9 +307,8 @@ onMounted(async () => {
   await Promise.all([cargarReservas(), cargarDisciplinas()]);
 });
 
-// Transformar datos
+// Transformar datos (igual que antes)
 const transformarReserva = (reserva: obtenerReservas): ReservaView => {
-  // normalize raw payload in a safe way (no 'any')
   const raw = reserva as unknown as Record<string, unknown>;
 
   const inicio = new Date(
@@ -313,12 +325,7 @@ const transformarReserva = (reserva: obtenerReservas): ReservaView => {
   const usuarioNombre =
     typeof raw.usuarioNombre === 'string' ? raw.usuarioNombre : undefined;
   const usuarioId =
-    raw.usuarioId ??
-    (typeof raw.usuario === 'object' &&
-      raw.usuario !== null &&
-      'id' in (raw.usuario as Record<string, unknown>)
-      ? (raw.usuario as Record<string, unknown>).id
-      : undefined);
+    raw.usuarioId ?? (typeof raw.usuario === 'object' && raw.usuario !== null && 'id' in (raw.usuario as Record<string, unknown>) ? (raw.usuario as Record<string, unknown>).id : undefined);
   const usuario =
     usuarioNombre ?? `Usuario #${(typeof usuarioId === 'number' || typeof usuarioId === 'string') ? usuarioId : 'N/A'}`;
 
@@ -343,14 +350,12 @@ const transformarReserva = (reserva: obtenerReservas): ReservaView => {
         ? raw.instalacion
         : `Instalación #${String(raw.instalacionId ?? '')}`;
 
-  // ensure string (split() indexing can produce undefined in TS)
   const iso = inicio.toISOString();
   const fecha = iso.split('T')[0] ?? '';
 
   const horaInicio = inicio.toTimeString().substring(0, 5);
   const horaFin = fin.toTimeString().substring(0, 5);
 
-  // pick a creation date from common keys and ensure string
   const fechaCreacion =
     (typeof raw.creadoEn === 'string' && raw.creadoEn) ||
     (typeof raw.creado_en === 'string' && raw.creado_en) ||
@@ -360,7 +365,8 @@ const transformarReserva = (reserva: obtenerReservas): ReservaView => {
   const notas = typeof raw.notas === 'string' ? raw.notas : undefined;
 
   return {
-    id: reserva.id,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    id: (reserva as any).id,
     usuario,
     email,
     disciplina,
@@ -378,10 +384,7 @@ const mapearEstado = (
   estado: string
 ): 'activa' | 'pendiente' | 'confirmada' | 'completada' | 'cancelada' => {
   const estadoLower = estado.toLowerCase();
-  const mapeo: Record<
-    string,
-    'activa' | 'pendiente' | 'confirmada' | 'completada' | 'cancelada'
-  > = {
+  const mapeo: Record<string, 'activa' | 'pendiente' | 'confirmada' | 'completada' | 'cancelada'> = {
     activa: 'activa',
     active: 'activa',
     pendiente: 'pendiente',
@@ -432,34 +435,97 @@ const verDetalle = (reserva: ReservaView) => {
   mostrarModal.value = true;
 };
 
+const updateReservaEstadoInList = (id: number, nuevoEstadoLocal: ReservaView['estado']) => {
+  const idx = reservas.value.findIndex(r => r.id === id);
+  if (idx !== -1) {
+    const reservaActual = reservas.value[idx];
+    if (!reservaActual) return;
+    reservas.value[idx] = {
+      id: reservaActual.id,
+      usuario: reservaActual.usuario,
+      email: reservaActual.email,
+      disciplina: reservaActual.disciplina,
+      instalacion: reservaActual.instalacion,
+      fecha: reservaActual.fecha,
+      horaInicio: reservaActual.horaInicio,
+      horaFin: reservaActual.horaFin,
+      estado: nuevoEstadoLocal,
+      fechaCreacion: reservaActual.fechaCreacion,
+      notas: reservaActual.notas
+    };
+    if (reservaSeleccionada.value?.id === id) {
+      const reservaSeleccionadaActual = reservaSeleccionada.value;
+      reservaSeleccionada.value = {
+        id: reservaSeleccionadaActual.id,
+        usuario: reservaSeleccionadaActual.usuario,
+        email: reservaSeleccionadaActual.email,
+        disciplina: reservaSeleccionadaActual.disciplina,
+        instalacion: reservaSeleccionadaActual.instalacion,
+        fecha: reservaSeleccionadaActual.fecha,
+        horaInicio: reservaSeleccionadaActual.horaInicio,
+        horaFin: reservaSeleccionadaActual.horaFin,
+        estado: nuevoEstadoLocal,
+        fechaCreacion: reservaSeleccionadaActual.fechaCreacion,
+        notas: reservaSeleccionadaActual.notas
+      };
+    }
+  }
+};
+
+const isProcessing = (id: number) => {
+  return processingIds.value.has(id);
+};
+
 const confirmarReserva = async (reserva: ReservaView) => {
+  if (!reserva?.id) return;
+  if (!confirm(`Confirmar la reserva de ${reserva.usuario}?`)) return;
+
   try {
-    // TODO: Implementar endpoint en backend
-    // await axios.put(`${import.meta.env.VITE_API}/reservas/${reserva.id}/confirmar`);
+    processingIds.value.add(reserva.id);
 
-    reserva.estado = 'confirmada';
-    console.log('Reserva confirmada:', reserva);
-    cerrarModal();
+    // Ajusta a lo que tu backend espera: ejemplo 'CONFIRMADA'
+    const nuevoEstadoBackend = 'CONFIRMADA';
+    const resp = await cambiarEstadoReserva(reserva.id, nuevoEstadoBackend);
 
-    alert('⚠️ Endpoint de confirmar pendiente en backend');
-  } catch (error) {
-    console.error('Error confirmando reserva:', error);
+    // Si backend devuelve la reserva actualizada, úsala; si no, actualiza con el estado local mapeado
+    const backendEstado = (resp && (resp.estado || resp.estadoReserva)) ? String(resp.estado || resp.estadoReserva) : nuevoEstadoBackend;
+    const estadoLocal = mapearEstado(backendEstado);
+    updateReservaEstadoInList(reserva.id, estadoLocal);
+
+    if (reservaSeleccionada.value?.id === reserva.id) cerrarModal();
+
+    console.log('Reserva confirmada:', reserva.id);
+  } catch (err) {
+    console.error('Error confirmando reserva:', err);
+    // LanzarAlerta ya lo hace la API; fallback:
+    try { LanzarAlerta('Error confirmando reserva', 'error'); } catch (e) { console.log(e) }
+  } finally {
+    processingIds.value.delete(reserva.id);
   }
 };
 
 const cancelarReserva = async (reserva: ReservaView) => {
+  if (!reserva?.id) return;
   if (!confirm(`¿Cancelar la reserva de ${reserva.usuario}?`)) return;
 
   try {
-    // TODO: Implementar endpoint en backend
-    // await axios.put(`${import.meta.env.VITE_API}/reservas/${reserva.id}/cancelar`);
+    processingIds.value.add(reserva.id);
 
-    reserva.estado = 'cancelada';
-    console.log('Reserva cancelada:', reserva);
+    const nuevoEstadoBackend = 'CANCELADA';
+    const resp = await cambiarEstadoReserva(reserva.id, nuevoEstadoBackend);
 
-    alert('⚠️ Endpoint de cancelar pendiente en backend');
-  } catch (error) {
-    console.error('Error cancelando reserva:', error);
+    const backendEstado = (resp && (resp.estado || resp.estadoReserva)) ? String(resp.estado || resp.estadoReserva) : nuevoEstadoBackend;
+    const estadoLocal = mapearEstado(backendEstado);
+    updateReservaEstadoInList(reserva.id, estadoLocal);
+
+    if (reservaSeleccionada.value?.id === reserva.id) cerrarModal();
+
+    console.log('Reserva cancelada:', reserva.id);
+  } catch (err) {
+    console.error('Error cancelando reserva:', err);
+    try { LanzarAlerta('Error cancelando reserva', 'error'); } catch (e) { console.log(e) }
+  } finally {
+    processingIds.value.delete(reserva.id);
   }
 };
 

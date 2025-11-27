@@ -68,7 +68,7 @@ import Button from 'primevue/button'
 import Password from 'primevue/password'
 import FloatLabel from 'primevue/floatlabel'
 import type { crearUsuario } from '@/interfaces/usuarios/usuario'
-import { crearUsuarioFinal } from '@/api/usuarios/usuariosApi'
+import { registrarUsuario } from '@/api/usuarios/usuariosApi'
 import { LanzarAlerta } from '@/utils/alertas'
 
 const router = useRouter()
@@ -88,7 +88,7 @@ async function onSubmit() {
   loading.value = true
   errorMsg.value = ''
   try {
-    const response = await crearUsuarioFinal({
+    const response = await registrarUsuario({
       tipoUsuarioId: 1,
       nombre: form.nombre,
       correo: form.correo.trim(),

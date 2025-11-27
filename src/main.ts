@@ -4,7 +4,7 @@ import 'sweetalert2/dist/sweetalert2.min.css'
 
 import App from './App.vue'
 import router from './router'
-
+import './assets/styles/base.css'
 import './assets/styles/main.css'
 import ConfirmationService from 'primevue/confirmationservice'
 import ToastService from 'primevue/toastservice'
@@ -31,6 +31,7 @@ app.use(VueSweetalert2)
 app.use(PrimeVue, {
   theme: {
     preset: Aura,
+    dark: true,
   },
 })
 

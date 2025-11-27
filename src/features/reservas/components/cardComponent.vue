@@ -1,48 +1,52 @@
 <template>
   <Card class="reserva-card">
+    <!-- TITLE (tu header) -->
     <template #title>
       <div class="title-row">
         <div class="title-left">
-          <div class="instalacion-name">{{ reserva?.instalacionNombre ?? ('ID ' + (reserva?.instalacionId ?? '-')) }}
+          <div class="instalacion-name">
+            {{ reserva?.instalacionNombre ?? ('ID ' + (reserva?.instalacionId ?? '-')) }}
           </div>
           <div class="subtitle">Reserva #{{ reserva?.id ?? '-' }}</div>
         </div>
 
         <div class="date-range">{{ formattedDateRange }}</div>
       </div>
-    </template>
 
-    <!-- body / content -->
-    <div class="card-grid">
-      <div class="field">
-        <div class="label">Instalación</div>
-        <div class="value">{{ reserva?.instalacionNombre ?? ('ID ' + (reserva?.instalacionId ?? '-')) }}</div>
-      </div>
+      <div class="card-grid">
+        <div class="field">
+          <div class="label">Instalación</div>
+          <div class="value">{{ reserva?.instalacionNombre ?? ('ID ' + (reserva?.instalacionId ?? '-')) }}</div>
+        </div>
 
-      <div class="field">
-        <div class="label">Usuario</div>
-        <div class="value">{{ reserva?.usuarioNombre ?? ('ID ' + (reserva?.usuarioId ?? '-')) }}</div>
-      </div>
+        <div class="field">
+          <div class="label">Usuario</div>
+          <div class="value">{{ reserva?.usuarioNombre ?? ('ID ' + (reserva?.usuarioId ?? '-')) }}</div>
+        </div>
 
-      <div class="field">
-        <div class="label">Inicio</div>
-        <div class="value">{{ formattedInicio }}</div>
-      </div>
+        <div class="field">
+          <div class="label">Inicio</div>
+          <div class="value">{{ formattedInicio }}</div>
+        </div>
 
-      <div class="field">
-        <div class="label">Fin</div>
-        <div class="value">{{ formattedFin }}</div>
-      </div>
+        <div class="field">
+          <div class="label">Fin</div>
+          <div class="value">{{ formattedFin }}</div>
+        </div>
 
-      <div class="field">
-        <div class="label">Estado</div>
-        <div class="value">
-          <Badge :value="String(reserva?.estado ?? '-')" :severity="estadoSeverity" />
+        <div class="field">
+          <div class="label">Estado</div>
+          <div class="value">
+            <Badge :value="reserva?.estado ?? '-'" :severity="estadoSeverity" />
+          </div>
         </div>
       </div>
-    </div>
+    </template>
 
-    <!-- footer: botones siempre visibles en p-card-footer -->
+    <!-- DEFAULT SLOT (contenido del card): aseguramos que se muestre -->
+
+
+    <!-- FOOTER SLOT -->
     <template #footer>
       <div class="card-footer">
         <Button label="Ver detalle" icon="pi pi-eye" class="my-btn primary" @click="onVer" />
@@ -53,6 +57,7 @@
 </template>
 
 <script setup lang="ts">
+/* -- mantén tu script tal cual -- */
 import { computed } from 'vue';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
@@ -102,139 +107,111 @@ function onCancel() { if (reserva) emit('cancel', reserva); }
 </script>
 
 <style scoped>
-:root {
-  --primary: #0b5cff;
-  --bg-card: rgba(3, 37, 65, 0.72);
-  --glass-border: rgba(11, 92, 255, 0.08);
-  --text-main: #e6f0ff;
-  --text-muted: rgba(230, 240, 255, 0.68);
-  --danger: #ff6b6b;
-}
+/* ---------- aseguramos que el contenido del p-card se muestre correctamente ---------- */
 
-/* Card */
+/* estilo base del card (tu paleta) */
 .reserva-card {
-  background: var(--bg-card);
-  color: var(--text-main);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 12px;
-  transition: transform .15s ease, box-shadow .15s ease;
+  background: rgba(18, 20, 28, 0.66) !important;
+  color: #f8f9fb !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+  /* dejamos que primevue maneje padding en p-card-content */
+  overflow: visible !important;
 }
 
-.reserva-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.45);
+/* Forzamos que la estructura interna de PrimeVue p-card no oculte nada */
+:deep(.p-card) {
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
 }
 
-/* Title */
+/* IMPORTANT: asegurar que el contenido por defecto (slot) de p-card sea visible */
+:deep(.p-card .p-card-content) {
+  display: block !important;
+  padding: 14px !important;
+  /* espacio interior para el contenido */
+  color: inherit !important;
+  overflow: visible !important;
+  height: auto !important;
+  /* quitar cualquier height:0 heredado */
+  min-height: 1px !important;
+}
+
+/* title area (primevue coloca el title fuera del p-card-content, por eso lo ves bien) */
 .title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 12px 16px;
   gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
-.title-left {
-  display: flex;
-  flex-direction: column;
-}
-
-.instalacion-name {
-  font-weight: 700;
-  font-size: 1.05rem;
-  color: var(--text-main);
-}
-
-.subtitle {
-  font-size: .86rem;
-  color: var(--text-muted);
-}
-
-.date-range {
-  font-size: .9rem;
-  color: var(--text-muted);
-}
-
-/* Grid content */
+/* el contenido que sigue al title debe verse */
 .card-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
-  margin-top: 8px;
+  padding: 12px 16px 0 16px;
+  /* espacio en p-card-content ya incluido */
 }
 
-@media(min-width:640px) {
-  .card-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
+/* etiquetas/valores */
 .field .label {
-  font-size: .75rem;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  color: rgba(248, 249, 251, 0.6);
   margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .field .value {
-  color: var(--text-main);
-  font-weight: 600;
+  color: #f8f9fb;
+  font-weight: 700;
+  font-size: 0.94rem;
 }
 
-/* Footer (botones) */
+/* footer forcing */
+:deep(.p-card .p-card-footer) {
+  display: block !important;
+  padding: 12px 16px 16px 16px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.03) !important;
+  background: transparent !important;
+}
+
+/* tu footer local */
 .card-footer {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
   align-items: center;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.02);
 }
 
-/* botón base visible: fondo suave + texto claro */
+/* botones */
 .my-btn {
   border-radius: 999px;
   padding: .45rem .9rem;
-  font-weight: 600;
-  box-shadow: none;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text-main) !important;
+  font-weight: 700;
 }
 
-.my-btn:hover {
-  color: black;
+/* Si alguna regla global setea visibility:hidden o opacity:0 lo quitamos */
+:deep(.p-card *[style*="visibility:hidden"]) {
+  visibility: visible !important;
 }
 
-/* estilo primario */
-.my-btn.primary {
-  background: linear-gradient(180deg, rgba(11, 92, 255, 0.14), rgba(11, 92, 255, 0.08));
-  border: 1px solid rgba(11, 92, 255, 0.18);
-  color: var(--text-main) !important;
+:deep(.p-card *[style*="opacity:0"]) {
+  opacity: 1 !important;
 }
 
-/* estilo danger */
-.my-btn.danger {
-  background: linear-gradient(180deg, rgba(255, 107, 107, 0.12), rgba(255, 107, 107, 0.06));
-  border: 1px solid rgba(255, 107, 107, 0.14);
-  color: white !important;
-}
-
-/* asegurar que iconos de PrimeIcons aparecen */
-:deep(.pi) {
-  color: inherit !important;
-}
-
-/* si alguna regla global mete `display:none` a p-button, forzamos display */
-:deep(.p-button) {
-  display: inline-flex !important;
-  align-items: center !important;
-}
-
-/* accesibilidad focus */
-.my-btn:focus {
-  outline: 3px solid rgba(11, 92, 255, 0.16);
-  outline-offset: 2px;
-  border-radius: 999px;
+/* Responsive */
+@media (min-width: 640px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>

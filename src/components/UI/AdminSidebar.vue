@@ -32,6 +32,13 @@
           </span>
           <span class="text">Usuarios</span>
         </router-link>
+
+        <router-link to="/admin/horarios/nuevo" class="nav-item">
+          <span class="icon">
+            <i class="pi pi-file-check"></i>
+          </span>
+          <span class="text">Horarios</span>
+        </router-link>
       </div>
     </nav>
 

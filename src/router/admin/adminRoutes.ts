@@ -42,7 +42,26 @@ export default [
         path: 'instalaciones',
         name: 'GestionInstalaciones',
         component: () => import('@/views/GestionInstalaciones.vue'),
-        meta: { requiresAuth: true, role: 'admin' },
+      },
+      {
+        path: 'asignar-curso',
+        name: 'AsignarCurso',
+        component: () => import('@/features/admin/views/AsignarCursoView.vue'),
+      },
+      {
+        path: 'horarios',
+        name: 'horarios',
+        component: () => import('@/features/horarios/horariosListView.vue'),
+      },
+      {
+        path: 'horarios/nuevo',
+        name: 'horarios-nuevo',
+        component: () => import('@/features/horarios/horariosForm.vue'),
+      },
+      {
+        path: 'horarios/editar/:id',
+        name: 'horarios-editar',
+        component: () => import('@/features/horarios/horariosView.vue'),
       },
     ],
   },
