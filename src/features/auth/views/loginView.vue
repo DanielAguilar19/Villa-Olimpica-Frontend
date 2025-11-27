@@ -56,7 +56,8 @@ import Divider from 'primevue/divider'
 import FloatLabel from 'primevue/floatlabel'
 import type { login } from '@/interfaces/auth/ILogin'
 import { loginUsuarios } from '@/api/auth/loginApi'
-import axios from 'axios'
+import type { loginResponse } from '@/interfaces/auth/ILogin'
+import { LanzarAlerta } from '@/utils/alertas'
 
 const router = useRouter()
 
@@ -66,41 +67,55 @@ const errorMsg = ref('')
 
 const canSubmit = computed(() => form.correo.trim().length > 0 && form.password.length > 0)
 
+//  mapa rol → nombre de ruta
+const ROLE_ROUTE_MAP: Record<string, string> = {
+  ADMIN: 'adminHome',
+  INSTRUCTOR: 'instructorHome',
+  EXTERNO: 'home',
+}
+
 onMounted(() => {
   localStorage.removeItem('usuario')
 })
-
 async function onSubmit() {
   if (!canSubmit.value) return
   loading.value = true
   errorMsg.value = ''
+
   try {
     const response = await loginUsuarios({
       correo: form.correo.trim(),
-      password: form.password
-    })
+      password: form.password,
+    }) as loginResponse | null
 
     if (response) {
-      localStorage.setItem('usuario', JSON.stringify(response))
-      await router.push({ name: 'home' })
+      // normalizamos tipoUsuario por si viene con espacios o minúsculas
+      const rawTipo = (response.tipoUsuario ?? '').toString().trim().toUpperCase()
+
+      localStorage.setItem('id', String(response.id))
+      localStorage.setItem('correo', response.correo)
+      localStorage.setItem('username', response.nombre)
+      localStorage.setItem('rol', rawTipo)
+      localStorage.setItem('auth', 'true')
+
+      const targetRouteName = ROLE_ROUTE_MAP[rawTipo] ?? 'home'
+
+      await router.push({ name: targetRouteName })
     }
-  } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      errorMsg.value = (err.response?.data)?.message
-        ?? (err.response?.status === 500 ? 'Credenciales inválidas.' : 'No se pudo iniciar sesión.')
-    } else {
-      errorMsg.value = 'Error inesperado.'
-    }
+  } catch (error) {
+    LanzarAlerta('Error al iniciar sesión. Verifique sus credenciales.', 'error')
+    console.log('Error al iniciar sesión:', error)
   } finally {
     loading.value = false
+
   }
 }
 
 function registrarcuenta() {
   router.push({ name: 'registrar' })
-
 }
 </script>
+
 
 <style scoped>
 #correo,

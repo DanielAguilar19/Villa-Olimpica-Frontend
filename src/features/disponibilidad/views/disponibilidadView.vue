@@ -206,10 +206,15 @@ async function reloadWeek(): Promise<void> {
 
 /** ===== Reserva ===== */
 async function reservar(s: SlotDTO) {
+  const user = Number(localStorage.getItem('id'))
   const confirmMsg = `Reservar ${hhmm(s.inicioTs)}–${hhmm(s.finTs)} para la instalación #${instalacionId}?`
   if (!confirm(confirmMsg)) return
   try {
-    const msg = await reservarSimple(instalacionId, s.inicioTs.slice(0, 10), hhmm(s.inicioTs))
+    if (!user) {
+      LanzarAlerta('Usuario no autenticado.', 'error')
+      return
+    }
+    const msg = await reservarSimple(user, instalacionId, s.inicioTs.slice(0, 10), hhmm(s.inicioTs))
     LanzarAlerta(msg || 'Reserva exitosa', 'success')
     await reloadWeek()
   } catch (e) {
