@@ -30,7 +30,7 @@
           <span class="icon">
             <i class="pi pi-user"></i>
           </span>
-          <span class="text">usuarios</span>
+          <span class="text">Usuarios</span>
         </router-link>
       </div>
     </nav>

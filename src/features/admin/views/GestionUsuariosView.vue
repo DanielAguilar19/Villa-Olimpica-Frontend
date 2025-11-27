@@ -54,7 +54,7 @@
               </td>
               <td class="actions-column">
                 <div class="action-buttons">
-                  <button @click="editar(u)" class="btn-action btn-edit" title="Editar usuario">
+                  <button @click="abrirEditar(u)" class="btn-action btn-edit" title="Editar usuario">
                     <i class="pi pi-pen-to-square" style="color: gray; font-size: 1.1rem;"></i>
                   </button>
 
@@ -91,33 +91,145 @@
         </div>
       </div>
     </transition>
+
+    <!-- Modal editar/crear usuario -->
+    <transition name="modal">
+      <div v-if="mostrarModal" class="modal-overlay" @click.self="cerrarModal">
+        <div class="modal-content" style="max-width:700px;">
+          <div class="modal-header">
+            <h3>{{ modoEdicion ? 'Editar Usuario' : 'Nuevo Usuario' }}</h3>
+            <button @click="cerrarModal" class="btn-close">✕</button>
+          </div>
+
+          <form @submit.prevent="guardarUsuario" class="modal-body">
+            <div class="form-group">
+              <label class="form-label">Nombre <span class="required">*</span></label>
+              <input v-model="form.nombre" type="text" class="form-input" maxlength="150" />
+              <span v-if="errors.nombre" class="error-message">{{ errors.nombre }}</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Correo <span class="required">*</span></label>
+              <input v-model="form.correo" type="email" class="form-input" maxlength="255" />
+              <span v-if="errors.correo" class="error-message">{{ errors.correo }}</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tipo de usuario <span class="required">*</span></label>
+              <select v-model.number="form.tipoUsuarioId" class="form-input">
+                <option :value="null" disabled>Seleccione un tipo</option>
+                <option v-for="t in tipos" :key="t.id" :value="t.id">{{ t.nombre }}</option>
+              </select>
+              <span v-if="errors.tipoUsuarioId" class="error-message">{{ errors.tipoUsuarioId }}</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Teléfono</label>
+              <input v-model="form.telefono" type="text" class="form-input" maxlength="30" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Estado</label>
+              <select v-model="form.estado" class="form-input">
+                <option value="ACTIVO">ACTIVO</option>
+                <option value="INACTIVO">INACTIVO</option>
+                <option value="SUSPENDIDO">SUSPENDIDO</option>
+                <option value="ELIMINADO">ELIMINADO</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Cambiar contraseña (opcional)</label>
+              <input v-model="form.password" type="password" class="form-input" minlength="8" />
+              <small style="color:#64748b">Dejar vacío para no cambiar la contraseña</small>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" @click="cerrarModal" class="btn-secondary">Cancelar</button>
+              <button type="submit" class="btn-primary" :disabled="guardando">
+                {{ guardando ? 'Guardando...' : (modoEdicion ? 'Actualizar' : 'Crear') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { getAllUsuarios, eliminarUsuario } from '@/api/usuarios/usuariosApi';
+import { getAllUsuarios, eliminarUsuario, registrarUsuario, actualizarUsuario } from '@/api/usuarios/usuariosApi';
 import type { UsuarioView } from '@/interfaces/usuarios/usuario';
+import { LanzarAlerta } from '@/utils/alertas';
+import axios from 'axios';
 import router from '@/router';
 
+// --- estado principal ---
 const usuarios = ref<UsuarioView[]>([]);
 const busqueda = ref('');
 const filtroEstado = ref('');
 const mostrarConfirmacion = ref(false);
 const usuarioAEliminar = ref<UsuarioView | null>(null);
 
+// modal / form
+const mostrarModal = ref(false);
+const modoEdicion = ref(false);
+const guardando = ref(false);
+
+type TipoUsuarioOption = { id: number; nombre: string };
+const tipos = ref<TipoUsuarioOption[]>([]);
+
+// form shape (coincide con DTO UsuarioUpdateIn: tipoUsuarioId, nombre, correo, password, telefono, estado)
+const form = ref<{
+  id?: number | null;
+  tipoUsuarioId: number | null;
+  nombre: string;
+  correo: string;
+  password?: string | null;
+  telefono?: string | null;
+  estado: string;
+}>({
+  id: null,
+  tipoUsuarioId: null,
+  nombre: '',
+  correo: '',
+  password: null,
+  telefono: '',
+  estado: 'ACTIVO'
+});
+
+const errors = ref<{ [k: string]: string | null }>({});
+
+// --- carga inicial ---
 const cargar = async () => {
   try {
-    const data = await getAllUsuarios();
-    usuarios.value = data;
+    usuarios.value = await getAllUsuarios();
   } catch (e) {
-    // getAllUsuarios ya dispara alerta
     console.error(e);
   }
 };
 
-onMounted(() => { cargar(); });
+// cargar tipos de usuario (intenta endpoint REST, si no hay fallback)
+const cargarTipos = async () => {
+  try {
+    const resp = await axios.get<TipoUsuarioOption[]>(`${import.meta.env.VITE_API}/api/tipos-usuarios`);
+    tipos.value = resp.data;
+  } catch (e) {
+    console.warn('No se pudo cargar tipos de usuario desde API, usando fallback', e);
+    tipos.value = [
+      { id: 1, nombre: 'EXTERNO' },
+      { id: 2, nombre: 'INSTRUCTOR' },
+      { id: 3, nombre: 'ADMIN' }
+    ];
+  }
+};
 
+onMounted(async () => {
+  await Promise.all([cargar(), cargarTipos()]);
+});
+
+// --- filtros ---
 const usuariosFiltrados = computed(() => {
   return usuarios.value.filter(u => {
     const q = busqueda.value.trim().toLowerCase();
@@ -127,16 +239,22 @@ const usuariosFiltrados = computed(() => {
   });
 });
 
-const nuevoUsuario = () => {
-  router.push({
-    name: 'CrearUsuarios'
-  })
-};
+// --- acciones UI ---
+const nuevoUsuario = () => { router.push({ name: 'CrearUsuarios' }) };
 
-const editar = (u: UsuarioView) => {
-  // abrir modal o ruta de edición
-  // router.push(`/admin/usuarios/${u.id}/editar`)
-  alert(`Editar usuario ${u.nombre}`);
+const abrirEditar = (u: UsuarioView) => {
+  modoEdicion.value = true;
+  form.value.id = u.id;
+  // si backend expone tipoUsuario como nombre, buscamos id por nombre en tipos
+  const tipo = tipos.value.find(t => t.nombre === u.tipoUsuario);
+  form.value.tipoUsuarioId = tipo ? tipo.id : null;
+  form.value.nombre = u.nombre;
+  form.value.correo = u.correo;
+  form.value.telefono = u.telefono || '';
+  form.value.estado = u.estado || 'ACTIVO';
+  form.value.password = null;
+  errors.value = {};
+  mostrarModal.value = true;
 };
 
 const confirmarEliminar = (u: UsuarioView) => {
@@ -153,8 +271,96 @@ const eliminar = async () => {
     usuarioAEliminar.value = null;
   } catch (e) {
     console.error(e);
-    // eliminarUsuario ya lanza alerta
   }
+};
+
+// --- validaciones ---
+const validarEmail = (email: string) => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+};
+
+const validarForm = () => {
+  errors.value = {};
+  if (!form.value.nombre || !form.value.nombre.trim()) {
+    errors.value.nombre = 'Nombre es requerido';
+  }
+  if (!form.value.correo || !validarEmail(form.value.correo)) {
+    errors.value.correo = 'Correo inválido';
+  }
+  if (!form.value.tipoUsuarioId) {
+    errors.value.tipoUsuarioId = 'Seleccione un tipo de usuario';
+  }
+  // password opcional: si viene, debe tener >=8 chars
+  if (form.value.password && form.value.password.length > 0 && form.value.password.length < 8) {
+    errors.value.password = 'La contraseña debe tener al menos 8 caracteres';
+  }
+
+  return Object.keys(errors.value).length === 0;
+};
+
+// --- enviar al backend ---
+const guardarUsuario = async () => {
+  if (!validarForm()) {
+    LanzarAlerta('Corrige los errores del formulario', 'warning');
+    return;
+  }
+
+  guardando.value = true;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const payload: any = {
+    nombre: form.value.nombre.trim(),
+    correo: form.value.correo.toLowerCase().trim(),
+    telefono: form.value.telefono || null,
+    estado: form.value.estado,
+    tipoUsuarioId: form.value.tipoUsuarioId
+  };
+  // solo incluir password si se suministro
+  if (form.value.password && form.value.password.length > 0) {
+    payload.password = form.value.password;
+  }
+
+  try {
+    let actualizado: { id: number; nombre: string; correo: string; tipoUsuario: string; estado: string; telefono?: string | undefined; creadoEn?: string | undefined; };
+    if (modoEdicion.value && form.value.id) {
+      actualizado = await actualizarUsuario(form.value.id, payload);
+      // actualizar en la lista local
+      const idx = usuarios.value.findIndex(u => u.id === actualizado.id);
+      if (idx !== -1) usuarios.value[idx] = actualizado;
+      LanzarAlerta('Usuario actualizado', 'success');
+    } else {
+      const creado = await registrarUsuario(payload);
+      usuarios.value.push(creado);
+      LanzarAlerta('Usuario creado', 'success');
+    }
+    cerrarModal();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
+    console.error(err);
+    // backend puede responder con message; intentamos mostrarlo
+    const message = err?.response?.data?.message || err?.message || 'Error al guardar usuario';
+    LanzarAlerta(message, 'error');
+  } finally {
+    guardando.value = false;
+  }
+};
+
+const cerrarModal = () => {
+  mostrarModal.value = false;
+  resetForm();
+};
+
+const resetForm = () => {
+  form.value = {
+    id: null,
+    tipoUsuarioId: null,
+    nombre: '',
+    correo: '',
+    password: null,
+    telefono: '',
+    estado: 'ACTIVO'
+  };
+  errors.value = {};
 };
 </script>
 

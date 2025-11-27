@@ -59,13 +59,8 @@
       <Card class="home-card card-like">
         <template #title>
           <div class="card-title">
-            <Avatar 
-              class="card-avatar" 
-              label="I" 
-              shape="circle" 
-              size="large"
-              style="background: linear-gradient(135deg,#8b5cf6,#a78bfa)" 
-            />
+            <Avatar class="card-avatar" label="I" shape="circle" size="large"
+              style="background: linear-gradient(135deg,#8b5cf6,#a78bfa)" />
             <div class="card-meta">
               <h3>Instalaciones</h3>
               <p>Gestiona las instalaciones deportivas de la villa.</p>
@@ -79,11 +74,7 @@
 
         <template #footer>
           <div class="card-footer">
-            <Button 
-              label="Ir a Instalaciones" 
-              icon="pi pi-arrow-right" 
-              @click="goTo('/admin/instalaciones')" 
-            />
+            <Button label="Ir a Instalaciones" icon="pi pi-arrow-right" @click="goTo('/admin/instalaciones')" />
           </div>
         </template>
       </Card>
@@ -92,10 +83,10 @@
       <Card class="home-card card-like">
         <template #title>
           <div class="card-title">
-            <Avatar class="card-avatar" label="CU" shape="circle" size="large" />
+            <Avatar class="card-avatar" label="U" shape="circle" size="large" />
             <div class="card-meta">
-              <h3>Crear Usuarios</h3>
-              <p>Formulario para crear todo tipo de usuarios.</p>
+              <h3>Usuarios</h3>
+              <p>Gestiona todo tipo de usuarios.</p>
             </div>
           </div>
         </template>
@@ -106,7 +97,7 @@
 
         <template #footer>
           <div class="card-footer">
-            <Button label="Ir al Formulario" icon="pi pi-arrow-right" @click="goTo('/admin/crear-usuarios')" />
+            <Button label="Ir al Formulario" icon="pi pi-arrow-right" @click="goTo('/admin/usuarios')" />
           </div>
         </template>
       </Card>

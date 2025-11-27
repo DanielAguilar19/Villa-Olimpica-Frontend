@@ -20,7 +20,7 @@ export default [
       {
         path: 'reservas',
         name: 'GestionReservas',
-        component: () => import('@/views/adminHomePageView.vue'),
+        component: () => import('@/features/admin/views/GestionReservasView.vue'),
       },
       {
         path: 'disciplinas',
@@ -39,7 +39,7 @@ export default [
       },
 
       {
-        path: '/admin/instalaciones',
+        path: 'instalaciones',
         name: 'GestionInstalaciones',
         component: () => import('@/views/GestionInstalaciones.vue'),
         meta: { requiresAuth: true, role: 'admin' },
